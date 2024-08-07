@@ -1,0 +1,955 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Quin Travel",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register a user",
+                "description": "Returns new user",
+                "operationId": "register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "description": "Your full name",
+                                        "type": "string",
+                                        "example": "Nguyen van a"
+                                    },
+                                    "email": {
+                                        "description": "Your email address",
+                                        "type": "string",
+                                        "example": "test@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "Your password",
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "confirm password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/auth/update_profile": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update your profile information",
+                "description": "Returns new profile information",
+                "operationId": "update_profile",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "description": "Your full name",
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "description": "Your address",
+                                        "type": "string"
+                                    },
+                                    "phone_number": {
+                                        "description": "Your phone number ",
+                                        "type": "integer"
+                                    },
+                                    "avatar": {
+                                        "description": "Your avatar ",
+                                        "type": "file",
+                                        "format": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/change_password": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Change password for current",
+                "description": "Returns status of the change password",
+                "operationId": "change_password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "description": "Your current password",
+                                        "type": "string"
+                                    },
+                                    "new_password": {
+                                        "description": "Your new password",
+                                        "type": "string"
+                                    },
+                                    "new_password_confirmation": {
+                                        "description": "Your new_password_confirmation ",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login",
+                "description": "Returns user",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Your email address",
+                                        "type": "string",
+                                        "example": "test@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "Your password",
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get User Information",
+                "description": "Returns user information",
+                "operationId": "getme",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Logout account",
+                "description": "Returns status",
+                "operationId": "logout",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/refresh": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Refresh token user",
+                "description": "Returns status",
+                "operationId": "refresh",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/get_country": {
+            "get": {
+                "tags": [
+                    "Location"
+                ],
+                "summary": "Get all Country",
+                "description": "Returns list countries",
+                "operationId": "get country",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/get_province": {
+            "get": {
+                "tags": [
+                    "Location"
+                ],
+                "summary": "Get all get_province",
+                "description": "Returns list get_province",
+                "operationId": "get get_province",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/auth/withgoogle": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login with google",
+                "description": "Returns user",
+                "operationId": "withgoogle",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id_token": {
+                                        "description": "Your ID token, used to identify",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/auth/forgotpassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "forgotpassword",
+                "description": "forgotpassword",
+                "operationId": "forgotpassword",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Your email",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/auth/changepassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "changepassword",
+                "description": "changepassword",
+                "operationId": "changepassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "description": "Your password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/news/list_news": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get list news",
+                "description": "Returns list news information",
+                "operationId": "list_news",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page of news to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit of news to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/news/{slug}": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get News Information",
+                "description": "Returns news information",
+                "operationId": "get news detail",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "News slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/tour/create": {
+            "post": {
+                "tags": [
+                    "Tour"
+                ],
+                "summary": "Create a new tour",
+                "description": "Returns new tour information",
+                "operationId": "CreateTour",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "thumnail"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of tour",
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "thumnail": {
+                                        "description": "Thumbnail of tour",
+                                        "type": "file",
+                                        "format": "file"
+                                    },
+                                    "images[]": {
+                                        "description": "List images (max 4)",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "file",
+                                            "format": "file"
+                                        }
+                                    },
+                                    "type": {
+                                        "description": "Type of tour",
+                                        "default": "inside",
+                                        "enum": [
+                                            "inside",
+                                            "outside"
+                                        ]
+                                    },
+                                    "category": {
+                                        "description": "Category of tour",
+                                        "default": "tour",
+                                        "enum": [
+                                            "tour",
+                                            "hotel"
+                                        ]
+                                    },
+                                    "price": {
+                                        "description": "Price of tour",
+                                        "type": "integer",
+                                        "default": 0
+                                    },
+                                    "country_id": {
+                                        "description": "country of tour",
+                                        "type": "integer",
+                                        "default": 232
+                                    },
+                                    "price_child": {
+                                        "description": "Price for children of tour",
+                                        "type": "integer",
+                                        "default": 0
+                                    },
+                                    "price_baby": {
+                                        "description": "Price for baby of tour",
+                                        "type": "integer",
+                                        "default": 0
+                                    },
+                                    "percent_sale": {
+                                        "description": "Percent sale of tour",
+                                        "type": "integer",
+                                        "default": 0
+                                    },
+                                    "additional_fee": {
+                                        "description": "Additional_fee of tour",
+                                        "type": "string",
+                                        "default": "0"
+                                    },
+                                    "province_start_id": {
+                                        "description": "Province start  of tour",
+                                        "type": "integer"
+                                    },
+                                    "province_end_id": {
+                                        "description": "Province end  of tour",
+                                        "type": "integer"
+                                    },
+                                    "number_of_day": {
+                                        "description": "Number day of  tour",
+                                        "type": "integer",
+                                        "default": 1
+                                    },
+                                    "tour_pakage": {
+                                        "description": "Tour parkage",
+                                        "default": "standard",
+                                        "enum": [
+                                            "luxury",
+                                            "standard",
+                                            "affordable",
+                                            "saving"
+                                        ]
+                                    },
+                                    "quantity": {
+                                        "description": "Quantity of  tour",
+                                        "type": "integer",
+                                        "default": 1
+                                    },
+                                    "date_start": {
+                                        "description": "Number day of  tour",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "default": "2024-06-29 16:19:10"
+                                    },
+                                    "transportation": {
+                                        "description": "Type transportation of  tour",
+                                        "default": "airplane",
+                                        "enum": [
+                                            "airplane",
+                                            "car"
+                                        ]
+                                    },
+                                    "time_start": {
+                                        "description": "Time start to leave  of  tour",
+                                        "type": "string",
+                                        "default": "08:30"
+                                    },
+                                    "date[]": {
+                                        "description": "Process date of each day",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "title_process[]": {
+                                        "description": "Process Title of each day",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "content[]": {
+                                        "description": "Process content of each day",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/tour/list_tour": {
+            "get": {
+                "tags": [
+                    "Tour"
+                ],
+                "summary": "Get list list_tour",
+                "description": "Returns list list_tour information",
+                "operationId": "list_tour",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page of tour to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit of tour to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "key",
+                        "in": "query",
+                        "description": "key of tour to return (type,category,province_start_id,province_end_id,...)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "in": "query",
+                        "description": "value of tour to return (1-4,1000-2000,hotel,...)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/tour/filterproducts": {
+            "get": {
+                "tags": [
+                    "Tour"
+                ],
+                "summary": "Get filter list list_tour",
+                "description": "Returns list list_tour information",
+                "operationId": "filterproducts",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page of tour to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit of tour to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "inside, ouside",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "province_start_id",
+                        "in": "query",
+                        "description": "province_id)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "province_end_id",
+                        "in": "query",
+                        "description": "province_id)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "number_of_day",
+                        "in": "query",
+                        "description": "0-4, 3)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date_start",
+                        "in": "query",
+                        "description": "2024-08-23",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "in": "query",
+                        "description": "10000-450000, 3000000)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tour_pakage",
+                        "in": "query",
+                        "description": "('luxury','standard','affordable','saving')",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "description": "(created_at-asc,desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/tour/{slug}": {
+            "get": {
+                "tags": [
+                    "Tour"
+                ],
+                "summary": "Get Tour Information",
+                "description": "Returns tour information",
+                "operationId": "get tour detail",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Tour slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/order/checkout": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "create an new order",
+                "description": "Returns an order ",
+                "operationId": "checkout",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "description": "Your full name",
+                                        "type": "string",
+                                        "example": "Nguyen van a"
+                                    },
+                                    "email": {
+                                        "description": "Your email address",
+                                        "type": "string",
+                                        "example": "test@gmail.com"
+                                    },
+                                    "address": {
+                                        "description": "Your address",
+                                        "type": "string",
+                                        "example": "Q12, Tp.HCM"
+                                    },
+                                    "phone_number": {
+                                        "description": "confirm password",
+                                        "type": "integer",
+                                        "example": "09234534"
+                                    },
+                                    "quantity": {
+                                        "description": "Quantity of adult",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quanity_child": {
+                                        "description": "Quantity of child",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quanity_baby": {
+                                        "description": "Quantity of baby",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tour_id": {
+                                        "description": "Tour id in the database",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "note": {
+                                        "description": "Your note",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/tour/like/{tour_id}": {
+            "get": {
+                "tags": [
+                    "Tour"
+                ],
+                "summary": "Like or unlike a tour",
+                "description": "Returns status",
+                "operationId": "like_tour",
+                "parameters": [
+                    {
+                        "name": "tour_id",
+                        "in": "path",
+                        "description": "tour_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get order detail Information",
+                "description": "Returns ordertail information",
+                "operationId": "orderdetail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "get order detaiil by order id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/history": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get order history Information",
+                "description": "Returns orders information",
+                "operationId": "orderhistory",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "JWT Token (Bearer <token>)"
+            }
+        }
+    }
+}
