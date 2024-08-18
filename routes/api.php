@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Middleware\JwtMiddleware;
+
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\Commoncontroller;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Common\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,23 +17,31 @@ Route::get('/user', function (Request $request) {
 
 Route::group([
     'prefix' => 'auth'
-], function ($router) {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('withgoogle', [AuthController::class, 'googleAuthentication']);
-    Route::post('forgotpassword', [AuthController::class, 'forgotpassword']);
-    Route::post('changepassword', [AuthController::class, 'changepassword']);
+], function () {
+    Route::post('check-email', [UserController::class, 'checkEmail']);
+    Route::post('verify-email', [UserController::class, 'verifyEmail']);
+    Route::post('register', [UserController::class, 'register']);
+    Route::post('login', [UserController::class, 'login']);
 });
-
-Route::middleware([JwtMiddleware::class])->group(function () {
-    Route::get('me', [AuthController::class, 'me']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::prefix('/auth')->group(function () {
-        Route::post('/update_profile', [AuthController::class, 'update_profile']);
-        Route::post('/change_password', [AuthController::class, 'change_password']);
+Route::prefix('common')->group(function () {
+    Route::get('banks', [Commoncontroller::class, 'getBanks']);
+    Route::prefix('/video')->group(function () {
+        Route::get('/getinfo/{id}', [VideoController::class, 'getVideoInfo']);
     });
-
-
 });
+Route::prefix('/category')->group(function(){
+    Route::get('/get_child/{id}', [CategoryController::class, 'get_child']);
+});
+
+// Route::middleware([JwtMiddleware::class])->group(function () {
+//     Route::get('me', [AuthController::class, 'me']);
+//     Route::post('logout', [AuthController::class, 'logout']);
+//     Route::post('/refresh', [AuthController::class, 'refresh']);
+//     Route::prefix('/auth')->group(function () {
+//         Route::post('/update_profile', [AuthController::class, 'update_profile']);
+//         Route::post('/change_password', [AuthController::class, 'change_password']);
+//     });
+
+
+// });
 

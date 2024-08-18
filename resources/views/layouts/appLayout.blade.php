@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="./assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/logo-no-text.png') }}">
     <title>
         @yield('viewTitle')
     </title>
@@ -18,117 +18,146 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    {{-- <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script> --}}
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css?v=2.0.4') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     @stack('css')
     @stack('js1')
 </head>
 
-<body class="g-sidenav-show   bg-gray-100">
+<body class="g-sidenav-show   bg-gray-100 d-flex flex-column" style="min-height: 100vh">
     <div style="min-height: 76px" class=" bg-primary position-absolute w-100"></div>
-    <aside
-        class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
-        id="sidenav-main">
-        <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand m-0 d-flex align-items-end gap-2" href="/" >
-                <img src="{{ asset('images/logo/logo-new.png') }}" class="navbar-brand-img h-100" alt="main_logo">
-                <span class="ms-1 font-weight-bold">ADMIN</span>
-            </a>
-        </div>
-        <hr class="horizontal dark mt-0">
-        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Dashboard</span>
-                    </a>
-                </li>
+    @if (!isset($sidebarshow) || $sidebarshow)
+        <aside
+            class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+            id="sidenav-main">
+            <div class="sidenav-header">
+                <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                    aria-hidden="true" id="iconSidenav"></i>
+                <a class="navbar-brand m-0 d-flex align-items-end gap-2" href="/">
+                    <img src="{{ asset('images/logo/logo-new.png') }}" class="navbar-brand-img h-100" alt="main_logo">
+                    <span class="ms-1 font-weight-bold">ADMIN</span>
+                </a>
+            </div>
+            <hr class="horizontal dark mt-0">
+            <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Dashboard</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link " href="./roles">
-                        <div class=" ms-2 me-2 text-warning text-sm opacity-10">
-                            <i class="fa-solid fa-users-gear"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">User Roles</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/tables.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Tables</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/billing.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Billing</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/virtual-reality.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-app text-info text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Virtual Reality</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/rtl.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">RTL</span>
-                    </a>
-                </li>
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/profile.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Profile</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/sign-in.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Sign In</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="./pages/sign-up.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-collection text-info text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Sign Up</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="sidenav-footer mx-3 ">
+                    <li class="nav-item">
+                        <a class="nav-link " href="/roles">
+                            <div class=" ms-2 me-2 text-warning text-sm opacity-10">
+                                <i class="fa-solid fa-users-gear"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">User Roles</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/categories">
+                            <div class=" ms-2 me-2 text-warning text-sm opacity-10">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Manage Categories</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/levels">
+                            <div class=" ms-2 me-2 text-success text-sm opacity-10">
+                                <i class="fa-solid fa-database"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Level Courses</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center text-info me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-single-02 text-dark text-sm opacity-10 text-info"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Manage User</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/course/create/1">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Create Course</span>
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link " href="./pages/billing.html">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Billing</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="./pages/virtual-reality.html">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-app text-info text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Virtual Reality</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="./pages/rtl.html">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">RTL</span>
+                        </a>
+                    </li> --}}
+                    <li class="nav-item mt-3">
+                        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users/{{auth('admin')->user()->uuid}}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Profile</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users/{{auth('admin')->user()->uuid}}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">{{ auth('admin')->user()->username }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/logout">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-collection text-info text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {{-- <div class="sidenav-footer mx-3 ">
             <div class="card card-plain shadow-none" id="sidenavCard">
                 <img class="w-50 mx-auto" src="./assets/img/illustrations/icon-documentation.svg"
                     alt="sidebar_illustration">
@@ -144,11 +173,12 @@
             <a class="btn btn-primary btn-sm mb-0 w-100"
                 href="https://www.creative-tim.com/product/argon-dashboard-pro?ref=sidebarfree" type="button">Upgrade
                 to pro</a>
-        </div>
-    </aside>
+        </div> --}}
+        </aside>
+    @endif
 
 
-    <main class="main-content position-relative border-radius-lg ">
+    <main class="main-content position-relative border-radius-lg  h-100 flex-1 d-flex flex-column" >
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur"
             data-scroll="false">
@@ -156,10 +186,10 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white"
-                                href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li>
+                                href="/">Home</a></li>
+                        {{-- <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li> --}}
                     </ol>
-                    <h6 class="font-weight-bolder text-white mb-0">Dashboard</h6>
+                    <h6 class="font-weight-bolder text-white mb-0"><a href="/" class="text-white">Quin Course</a></h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -170,11 +200,20 @@
                         </div>
                     </div>
                     <ul class="navbar-nav  justify-content-end">
-                        <li class="nav-item d-flex align-items-center">
-                            <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
-                                <i class="fa fa-user me-sm-1"></i>
-                                <span class="d-sm-inline d-none">Sign In</span>
-                            </a>
+                        <li class="nav-item d-flex align-items-center dropdown">
+                            <div class="nav-link text-white font-weight-bold px-0 d-flex align-items-center gap-2 dropdown-toggle cursor-pointer"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <div>
+                                    <img width="30" height="30" class="object-fit-cover rounded-circle"
+                                        src="{{ auth('admin')->user()->avatar_url }}" alt="">
+                                </div>
+                                <span class="d-sm-inline d-none">{{ auth('admin')->user()->username }}</span>
+                            </div>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item"
+                                        href="/users/{{ auth('admin')->user()->uuid }}">Profile</a></li>
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
@@ -201,7 +240,8 @@
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
-                                                <img src="./assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                                                <img src="{{ asset('assets/img/team-2.jpg') }}"
+                                                    class="avatar avatar-sm  me-3 ">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="text-sm font-weight-normal mb-1">
@@ -219,7 +259,7 @@
                                     <a class="dropdown-item border-radius-md" href="javascript:;">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
-                                                <img src="./assets/img/small-logos/logo-spotify.svg"
+                                                <img src="{{ asset('assets/img/small-logos/logo-spotify.svg') }}"
                                                     class="avatar avatar-sm bg-gradient-dark  me-3 ">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
@@ -279,30 +319,32 @@
             </div>
         </nav>
         <!-- End Navbar -->
-        <div class="container-fluid py-4">
+        <div class="container-fluid py-4 d-flex flex-column justify-content-between  flex-1">
             {{-- main --}}
-            @yield('main')
+            <div class="flex-1">
+                @yield('main')
+            </div>
             {{-- main --}}
             <footer class="footer pt-3  ">
                 <div class="container-fluid">
                     <div class="row align-items-center justify-content-lg-between">
                         <div class="col-lg-6 mb-lg-0 mb-4">
                             <div class="copyright text-center text-sm text-muted text-lg-start">
-                                
-                               Copyright © <script>
-                                document.write(new Date().getFullYear())
-                            </script>   <i class="fa fa-heart text-danger"></i> by Quynh - Nhung
-                                <a href="https://mr-quynh.com" class="fw-bold"
-                                    target="_blank"></a>
+
+                                Copyright ©
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script> <i class="fa fa-heart text-danger"></i> by Quynh - Nhung
+                                <a href="https://mr-quynh.com" class="fw-bold" target="_blank"></a>
                                 for all love.
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                                
+
                                 <li class="nav-item">
-                                    <a href="https://mr-quynh.com" class="nav-link text-muted"
-                                        target="_blank">About Us</a>
+                                    <a href="https://mr-quynh.com" class="nav-link text-muted" target="_blank">About
+                                        Us</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="https://mr-quynh.com" class="nav-link text-muted"
@@ -411,94 +453,100 @@
         </div>
     </div>
     <!--   Core JS Files   -->
+
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/chartjs.min.js') }}"></script>
     <script>
-        var ctx1 = document.getElementById("chart-line").getContext("2d");
+        var ctx1 = document.getElementById("chart-line")?.getContext("2d");
+        if (ctx1) {
 
-        var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
 
-        gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
-        gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
-        gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
-        new Chart(ctx1, {
-            type: "line",
-            data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Mobile apps",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    borderColor: "#5e72e4",
-                    backgroundColor: gradientStroke1,
-                    borderWidth: 3,
-                    fill: true,
-                    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                    maxBarThickness: 6
 
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    }
+            var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+
+            gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
+            new Chart(ctx1, {
+                type: "line",
+                data: {
+                    labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                        label: "Mobile apps",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#5e72e4",
+                        backgroundColor: gradientStroke1,
+                        borderWidth: 3,
+                        fill: true,
+                        data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                        maxBarThickness: 6
+
+                    }],
                 },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                scales: {
-                    y: {
-                        grid: {
-                            drawBorder: false,
-                            display: true,
-                            drawOnChartArea: true,
-                            drawTicks: false,
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            display: true,
-                            padding: 10,
-                            color: '#fbfbfb',
-                            font: {
-                                size: 11,
-                                family: "Open Sans",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                    x: {
-                        grid: {
-                            drawBorder: false,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
                             display: false,
-                            drawOnChartArea: false,
-                            drawTicks: false,
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            display: true,
-                            color: '#ccc',
-                            padding: 20,
-                            font: {
-                                size: 11,
-                                family: "Open Sans",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
                         }
                     },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#fbfbfb',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: false,
+                                drawOnChartArea: false,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                color: '#ccc',
+                                padding: 20,
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                    },
                 },
-            },
-        });
+            });
+        }
     </script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -509,9 +557,10 @@
         }
     </script>
     <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    {{-- <script async defer src="https://buttons.github.io/buttons.js"></script> --}}
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+    @yield('js')
 </body>
 
 </html>

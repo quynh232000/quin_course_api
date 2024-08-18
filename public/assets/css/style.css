@@ -1,0 +1,34 @@
+:root{
+    --primary:#9254ff
+}
+.object-fit-cover{
+    object-fit: cover;
+}
+.btn{
+    margin-bottom: 0 !important;
+}
+.card-hover:hover{
+    cursor: pointer;
+    /* background-color: rgba(243, 240, 255,.5); */
+    background-color: #d3ccf180;
+    transition: .3s ease;
+}
+.fs-7{
+    font-size: 14px;
+}
+.fs-8{
+    font-size: 12px;
+}
+.fs-9{
+    font-size: 10px;
+}
+.fs-10{
+    font-size: 8px;
+}
+.flex-1{
+    flex: 1 !important;
+}
+.btn-active-primary{
+    background-color: #d3ccf180;
+    color: var(--primary);
+}

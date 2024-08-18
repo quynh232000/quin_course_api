@@ -22,6 +22,15 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    public function isVerifyTeacher()
+    {
+        return Teacherinfo::where('user_id', auth('admin')->user()->id)->exists();
+    }
+    public function roles()
+    {
+        $role_ids = UserRole::where('user_id', $this->id)->pluck('role_id');
+        return Role::whereIn('id', $role_ids)->pluck('name');
+    }
     protected $fillable = [
         'uuid',
         'first_name',
@@ -44,6 +53,8 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'bio',
         'email_verified_at',
+        'failed_attempts',
+        'blocked_until'
     ];
 
     /**
