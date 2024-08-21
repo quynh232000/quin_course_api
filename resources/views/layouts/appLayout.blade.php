@@ -14,6 +14,8 @@
     <!-- Nucleo Icons -->
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
+
+    
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
@@ -90,14 +92,23 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/course/create/1">
+                        <a class="nav-link " href="/course/instructor">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
                             </div>
-                            <span class="nav-link-text ms-1">Create Course</span>
+                            <span class="nav-link-text ms-1">Mange Course</span>
                         </a>
                     </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link " href="./pages/billing.html">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Mange Course</span>
+                        </a>
+                    </li> --}}
                     {{-- <li class="nav-item">
                         <a class="nav-link " href="./pages/billing.html">
                             <div
@@ -559,7 +570,9 @@
     <!-- Github buttons -->
     {{-- <script async defer src="https://buttons.github.io/buttons.js"></script> --}}
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="{{ asset('assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+   
+    {{-- <script src="{{ asset('assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script> --}}
+    <script src="{{ asset('assets/js/argon-dashboard.js?v=2.0.4') }}"></script>
     @yield('js')
 </body>
 

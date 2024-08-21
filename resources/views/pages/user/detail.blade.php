@@ -154,7 +154,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-7 d-flex align-items-end">
+                                        <div class="col-md-7 d-flex align-items-start">
                                             <button type="submit" class="btn btn-sm btn-primary">Add Role</button>
                                         </div>
                                     </form>

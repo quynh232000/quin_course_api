@@ -39,7 +39,7 @@
                             <strong>{{$item->id}}</strong>
                         </div>
                         <div>
-                          <img src="{{$item->avatar_url}}" class="avatar avatar-sm me-3" alt="user1">
+                          <img src="{{$item->avatar_url}}" class="avatar avatar-sm me-3 object-fit-cover" alt="user1">
                         </div>
                         <div class="d-flex flex-column justify-content-center">
                           <h6 class="mb-0 text-sm">{{$item->full_name}}</h6>

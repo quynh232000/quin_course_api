@@ -4,14 +4,14 @@
 @endsection
 
 @php
-    $sidebarshow = false;
+    $sidebarshow =  false;
 @endphp
 
 @section('main')
     <div class="container">
         <div class="row">
             <div class="col-md-12 border-bottom px-2">
-                <h4>{{ $course->title }}</h4>
+                <h4>{{ $course->title?? 'Mange Courses' }}</h4>
             </div>
         </div>
         <div class="row py-3">

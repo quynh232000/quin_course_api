@@ -4,98 +4,131 @@
 @endsection
 
 
-@section('css')
+
+@push('css')
+    {{-- <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grey+Qo&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet"> --}}
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.min.js"></script> --}}
+    {{-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Grey+Qo&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet"> --}}
     <style>
-        .certificate-container {
-            width: 80%;
-            max-width: 800px;
-            background-color: #fff;
-            border: 10px solid #4CAF50;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .certificate-border {
-            border: 5px solid #000;
-            padding: 20px;
-        }
-
-        .certificate-title {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: red
-        }
-
-        .certificate-text {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-
-        .certificate-recipient {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .certificate-course {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .certificate-signature {
-            margin-top: 50px;
-            font-size: 18px;
+        @font-face {
+            font-family: 'Great Vibes';
+            src: url("{{ asset('assets/fonts/GreatVibes-Regular.ttf') }}") format('truetype');
+            font-weight: normal;
+            /* or bold, etc. */
+            font-style: normal;
+            /* or italic, etc. */
         }
 
         .certificate-container {
-            color: rgb(0, 0, 0);
-            /* Override any color that uses oklch */
+            color: rgb(0, 0, 0) !important;
+        }
+
+
+        #signature {
+            /* font-family: "Playfair Display", serif; */
+            font-family: "Great Vibes", cursive;
+            font-size: 18px !important;
+        }
+
+        #name_certificate {}
+
+        #user_name {
+            /* font-family: "Playfair Display", serif; */
+            font-family: "Great Vibes", cursive;
+            font-optical-sizing: auto;
+            font-size: 64px !important;
         }
     </style>
-@endsection
+@endpush
 @section('content')
     <div class="p-4 fw-bold fs-5 border-bottom">
-        Intended learners
+        Certificate
     </div>
     <div class="p-4">
+        @if (session('error'))
+            <div>
+                <div class="alert alert-danger py-2 text-white">{{ session('error') }}</div>
+            </div>
+        @endif
+        @if (session('success'))
+            <div>
+                <div class="alert alert-success py-2 text-white">{{ session('success') }}</div>
+            </div>
+        @endif
+        <form method="POST" class="mb-3 border-bottom">
+            @csrf
+            <div class="form-group">
+                <label for="" class="form-label">Certificate name of this course:</label>
+                <input id="input-certificate" type="text" class="form-control" name="certificate_name"
+                    value="{{ old('certificate_name') ? old('certificate_name') : $course->certificate_name }}"
+                    placeholder="{{ $course->title }}">
+                <div class="d-flex justify-content-end mt-3"><button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+        <div class="text-center fw-bold fs-4 mb-4 text-success">Preview Certificate</div>
         <div>
-            <div class="certificate-container">
-                <div class="certificate-border">
-                    <div class="certificate-content">
-                        <h1 class="certificate-title">Certificate of Achievement</h1>
-                        <p class="certificate-text" style="color: red">This is to certify that</p>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" class="w-100 h-100" alt="">
-                        <h2 class="certificate-recipient" id="recipientName">[Recipient's Name]</h2>
-                        <p class="certificate-text">has successfully completed</p>
-                        <h3 class="certificate-course" id="courseName">[Course Name]</h3>
-                        <p class="certificate-text">Issued on <span id="issueDate">[Date]</span></p>
-                        <p class="certificate-signature">Signature: __________________</p>
+            <div class=" border-2 border-primary p-4" style="border: 3px dashed green;background-color:rgb(231, 234, 249)">
+
+
+
+                <div class="certificate-container position-relative">
+
+                    <div>
+                        <img class="w-100 h-100" src="{{ asset('images/logo/certificate_quincourse.png') }}" alt="">
                     </div>
+                    <i id="user_name" class="text-center position-absolute start-0 end-0 text-primary  fs-2 ps-3"
+                        style="top: 44%; font-family: 'Great Vibes', cursive; color: #000;">
+                        {{ auth('admin')->user()->first_name . ' ' . auth('admin')->user()->last_name }}
+                    </i>
+                    <div id="certificate_name" class="text-center position-absolute start-0 end-0 text-primary  fs-5"
+                        style="top: 66%; color: #000;">
+                        {{ $course->certificate_name ?? $course->title }}
+                    </div>
+                    <div class="text-center position-absolute fs-7" style="top: 79%; color: gray; left: 28%;">
+                        HCM, {{ now()->format('d M Y') }}
+                    </div>
+                    <i id="signature" class="text-center position-absolute fs-5" style="top: 79%; left: 60%; color: #000;">
+                        Quin Course
+                    </i>
                 </div>
             </div>
 
-            <button class="btn btn-outline-primary" onclick="exportToPDF()">Download PDF</button>
-            <button class="btn btn-outline-primary" onclick="exportToPNG()">Download PNG</button>
+            <div class="mt-4 d-flex justify-content-center gap-2">
+                <button class="btn btn-outline-primary" onclick="exportToPDF()">Download PDF</button>
+                <button class="btn btn-outline-primary" onclick="exportToPNG()">Download PNG</button>
+            </div>
         </div>
 
-        <div class="border-top pt-4 mt-3">
-            <button class="btn btn-success w-100">Save </button>
-        </div>
+
 
     </div>
 @endsection
 @section('js')
+    {{-- cahnge input --}}
+    <script>
+        $("#input-certificate").on('input', function(e) {
+            const value = $(this).val();
+            $('#certificate_name').text(value);
+        })
+    </script>
+
+
+
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script>
-        document.getElementById('recipientName').textContent = 'John Doe';
-        document.getElementById('courseName').textContent = 'Web Development';
-        document.getElementById('issueDate').textContent = 'August 18, 2024';
 
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.min.js"></script> --}}
+    <script>
         function exportToPDF() {
             const element = document.querySelector('.certificate-container');
             html2pdf(element, {
@@ -118,11 +151,28 @@
 
         function exportToPNG() {
             const element = document.querySelector('.certificate-container');
+            const username = `{{ auth('admin')->user()->username }}`
             domtoimage.toPng(element)
                 .then(function(dataUrl) {
                     const link = document.createElement('a');
                     link.href = dataUrl;
-                    link.download = 'certificate.png';
+                    link.download = username + '_certificate.png';
+                    link.click();
+                })
+                .catch(function(error) {
+                    console.error('Error capturing element:', error);
+                });
+        }
+
+        function exportToPNG() {
+            const element = document.querySelector('.certificate-container');
+            const username = 'Certificate_' + `{{ auth('admin')->user()->username }}`;
+
+            domtoimage.toPng(element)
+                .then(function(dataUrl) {
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = username.toUpperCase() + '.png';
                     link.click();
                 })
                 .catch(function(error) {

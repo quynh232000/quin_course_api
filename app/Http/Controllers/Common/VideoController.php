@@ -48,7 +48,7 @@ class VideoController extends Controller
         // $thumbnailUrl = $this->youtube->getVideoThumbnail($videoId);
         $info = $this->youtube->getVideoInfo($id);
         if (!$info) {
-            return Response::json(false, 'Video not fund', null, null, 401);
+            return Response::json(false, 'Video not fund');
         }
         return Response::json(true, 'Get video infomation by id successfully', $info);
     }

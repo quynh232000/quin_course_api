@@ -42,10 +42,11 @@ class YouTubeService
 
         $video = $response->items[0];
 
+        $thumbnails = $video->snippet->thumbnails;
         // Format video information
         return [
             'title' => $video->snippet->title,
-            'thumbnail' => $video->snippet->thumbnails->default->url,
+            'thumbnail' => $thumbnails->maxres->url ?? $thumbnails->high->url ?? $thumbnails->medium->url ?? $thumbnails->default->url,
             'duration' => $this->convertDuration($video->contentDetails->duration),
         ];
     }
@@ -56,12 +57,12 @@ class YouTubeService
         $minutes = $interval->i;
         $seconds = $interval->s;
 
-        $totalSeconds = $interval->h * 3600 +$interval->i * 60+ $interval->s;
+        $totalSeconds = $interval->h * 3600 + $interval->i * 60 + $interval->s;
 
         // Format the duration as H:MM:SS or MM:SS
-        $data['time'] = ($hours > 0 ? $hours . ':' : '') . 
-               str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . 
-               str_pad($seconds, 2, '0', STR_PAD_LEFT);
+        $data['time'] = ($hours > 0 ? $hours . ':' : '') .
+            str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' .
+            str_pad($seconds, 2, '0', STR_PAD_LEFT);
         $data['total_seconds'] = $totalSeconds;
         return $data;
     }

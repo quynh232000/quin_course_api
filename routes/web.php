@@ -64,10 +64,30 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
         Route::get('create/{step}', [TeacherController::class, 'createCourse']);
         Route::post('create/{step}', [TeacherController::class, '_createCourse']);
         Route::get('{id}/manage/goals', [CourseController::class, 'course_goals'])->name('course.manage.goals');
-        Route::get('{id}/manage/curriculum', [CourseController::class, 'course_curriculum'])->name('course.manage.course_curriculum');
+        Route::post('{id}/manage/goals', [CourseController::class, '_course_goals'])->name('course.manage._goals');
+        Route::get('{id}/manage/goals/delete/{goal_id}', [CourseController::class, 'course_goals_delete'])->name('course.manage._goals.delete');
+
+        Route::prefix('{id}/manage/curriculum')->group(function() {
+            // Route::get('{id}/manage/curriculum', [CourseController::class, 'course_curriculum'])->name('course.manage.course_curriculum');
+            Route::get('/', [CourseController::class, 'course_curriculum'])->name('course.manage.course_curriculum');
+            Route::get('/{section_id}', [CourseController::class, 'course_curriculum'])->name('course.manage.course_section_edit');
+            Route::post('/', [CourseController::class, '_course_curriculum'])->name('course.manage._course_curriculum');
+            Route::post('/{section_id}', [CourseController::class, '_course_curriculum'])->name('course.manage._course_curriculum_edit');
+            Route::get('/delete_section/{section_id}', [CourseController::class, 'delete_section'])->name('course.manage.delete_section');
+            Route::get('section/{section_id}',[CourseController::class, 'course_curriculum_section'])->name('course.manage.course_curriculum_section');      
+            Route::get('section/{section_id}/lecture/{step_id}',[CourseController::class, 'course_curriculum_lecture'])->name('course.manage.course_curriculum_lecture');      
+            Route::get('section/{section_id}/quiz/{step_id}',[CourseController::class, 'course_curriculum_quiz'])->name('course.manage.course_curriculum_quiz');      
+            Route::get('section/{section_id}/asm/{step_id}',[CourseController::class, 'course_curriculum_asm'])->name('course.manage.course_curriculum_asm');      
+           
+        });
         Route::get('{id}/manage/basics', [CourseController::class, 'course_basics'])->name('course.manage.course_basics');
+        Route::post('{id}/manage/basics', [CourseController::class, '_course_basics'])->name('course.manage._course_basics');
         Route::get('{id}/manage/pricing', [CourseController::class, 'course_pricing'])->name('course.manage.course_pricing');
+        Route::post('{id}/manage/pricing', [CourseController::class, '_course_pricing'])->name('course.manage._course_pricing');
         Route::get('{id}/manage/certificate', [CourseController::class, 'course_certificate'])->name('course.manage.course_certificate');
+        Route::post('{id}/manage/certificate', [CourseController::class, '_course_certificate'])->name('course.manage._course_certificate');
+        Route::get('instructor', [CourseController::class, 'instructor'])->name('course.instructor');
+        Route::get('delete/{id}', [CourseController::class, 'delete'])->name('course.delete');
     });
     Route::get('/notfund', function () {
         return view('pages.notfund');

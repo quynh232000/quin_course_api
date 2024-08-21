@@ -13,6 +13,11 @@
     background-color: #d3ccf180;
     transition: .3s ease;
 }
+.btn-hover-primary:hover{
+    cursor: pointer;
+    background-color: #e9e8ee80;
+    transition: .3s ease;
+}
 .fs-7{
     font-size: 14px;
 }
@@ -31,4 +36,10 @@
 .btn-active-primary{
     background-color: #d3ccf180;
     color: var(--primary);
+}
+.h-fit{
+    height: fit-content;
+}
+.w-fit{
+    width: fit-content;
 }
