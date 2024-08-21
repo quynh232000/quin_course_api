@@ -67,7 +67,7 @@
                                 href="{{ route('course.manage.course_section_edit', ['id' => $course->id, 'section_id' => $item->id]) }}"
                                 class="border py-1 px-2 mb-0"><i class="fa-solid fa-pen-to-square"></i></a>
                             <a title="Add lecture"
-                                href="{{ route('course.manage.course_section_edit', ['id' => $course->id, 'section_id' => $item->id]) }}"
+                                href="{{ route('course.manage.course_curriculum_section', ['id' => $course->id, 'section_id' => $item->id]) }}"
                                 class="border py-1 px-2 text-primary">
                                 <i class="fa-solid fa-angles-right"></i>
                             </a>

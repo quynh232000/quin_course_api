@@ -5,20 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CourseSection extends Model
+class CourseStep extends Model
 {
     use HasFactory;
-    protected $table = "course_sections";
+    protected $table = "course_steps";
 
     protected $fillable = [
         'uuid',
-        'course_id',
+        'section_id',
         'title',
-        'will_learn',
+        'type',
         'priority',
-        'is_show'
+        'is_preview',
     ];
-    public function steps(){
-        return $this->hasMany(CourseStep::class, 'section_id');
+    public function lecture()
+    {
+        return $this->hasOne(CourseLecture::class, 'step_id');
     }
 }

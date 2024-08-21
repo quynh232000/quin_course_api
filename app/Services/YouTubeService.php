@@ -27,8 +27,16 @@ class YouTubeService
         }
         return $response->items[0]->snippet->thumbnails->default->url ?? null;
     }
+    function getVideoIdFromUrl($url)
+    {
+        $parsedUrl = parse_url($url);
+        parse_str($parsedUrl['query'], $queryParams);
+
+        return $queryParams['v'] ?? null;
+    }
     public function getVideoInfo($videoId)
     {
+       
         $youtube = new Google_Service_YouTube($this->client);
 
         // Fetch video details
@@ -48,6 +56,7 @@ class YouTubeService
             'title' => $video->snippet->title,
             'thumbnail' => $thumbnails->maxres->url ?? $thumbnails->high->url ?? $thumbnails->medium->url ?? $thumbnails->default->url,
             'duration' => $this->convertDuration($video->contentDetails->duration),
+           
         ];
     }
     private function convertDuration($duration)

@@ -75,7 +75,10 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
             Route::post('/{section_id}', [CourseController::class, '_course_curriculum'])->name('course.manage._course_curriculum_edit');
             Route::get('/delete_section/{section_id}', [CourseController::class, 'delete_section'])->name('course.manage.delete_section');
             Route::get('section/{section_id}',[CourseController::class, 'course_curriculum_section'])->name('course.manage.course_curriculum_section');      
+            Route::post('section/{section_id}',[CourseController::class, '_course_curriculum_section'])->name('course.manage._course_curriculum_section');      
+            Route::post('section/{section_id}/{step_id}',[CourseController::class, 'edit_title_section_step'])->name('course.manage._course_curriculum_section_step');      
             Route::get('section/{section_id}/lecture/{step_id}',[CourseController::class, 'course_curriculum_lecture'])->name('course.manage.course_curriculum_lecture');      
+            Route::post('section/{section_id}/lecture/{step_id}',[CourseController::class, '_course_curriculum_lecture'])->name('course.manage._course_curriculum_lecture');      
             Route::get('section/{section_id}/quiz/{step_id}',[CourseController::class, 'course_curriculum_quiz'])->name('course.manage.course_curriculum_quiz');      
             Route::get('section/{section_id}/asm/{step_id}',[CourseController::class, 'course_curriculum_asm'])->name('course.manage.course_curriculum_asm');      
            

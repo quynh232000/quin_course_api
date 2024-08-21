@@ -427,14 +427,14 @@ function toggleSidenav() {
     if (body.classList.contains(className)) {
         body.classList.remove(className);
         setTimeout(function () {
-            sidenav.classList.remove("bg-white");
+            sidenav?.classList.remove("bg-white");
         }, 100);
-        sidenav.classList.remove("bg-transparent");
+        sidenav?.classList.remove("bg-transparent");
     } else {
         body.classList.add(className);
-        sidenav.classList.add("bg-white");
-        sidenav.classList.remove("bg-transparent");
-        iconSidenav.classList.remove("d-none");
+        sidenav?.classList.add("bg-white");
+        sidenav?.classList.remove("bg-transparent");
+        iconSidenav?.classList.remove("d-none");
     }
 }
 
@@ -461,15 +461,15 @@ function navbarColorOnResize() {
             referenceButtons.classList.contains("active") &&
             referenceButtons.getAttribute("data-class") === "bg-transparent"
         ) {
-            sidenav.classList.remove("bg-white");
+            sidenav?.classList.remove("bg-white");
         } else {
             if (!body.classList.contains("dark-version")) {
-                sidenav.classList.add("bg-white");
+                sidenav?.classList.add("bg-white");
             }
         }
     } else {
-        sidenav.classList.add("bg-white");
-        sidenav.classList.remove("bg-transparent");
+        sidenav?.classList.add("bg-white");
+        sidenav?.classList.remove("bg-transparent");
     }
 }
 

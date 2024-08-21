@@ -2,6 +2,16 @@
 @section('viewTitle')
     {{ $course->title }} | Quin
 @endsection
+@push('css')
+    <style>
+        .position-absolute.cursor-pointer{
+            display: none;
+        }
+        .form-group.my-3:hover .position-absolute.cursor-pointer{
+            display: block;
+        }
+    </style>
+@endpush
 @section('content')
     <div class="p-4 fw-bold fs-5 border-bottom">
         Intended learners

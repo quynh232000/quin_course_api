@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseIntend;
+use App\Models\CourseLecture;
 use App\Models\CourseSection;
+use App\Models\CourseStep;
 use App\Models\LevelCourse;
 use App\Services\YouTubeService;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -203,9 +205,20 @@ class CourseController extends Controller
         if ($course->user_id != auth('admin')->user()->id) {
             return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
         }
-        return view('pages.teacher.course_curriculum_section', compact('course'));
+        if (!$section_id) {
+            return redirect()->back()->with('error', 'Section ID is required');
+        }
+        $section = CourseSection::where('id', $section_id)->with('steps')->first();
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+
+        // get all step of this section
+
+
+        return view('pages.teacher.course_curriculum_section', compact('course', 'section'));
     }
-    public function course_curriculum_lecture($id, $section_id, $step_id)
+    public function edit_title_section_step($id, $section_id, $step_id, Request $request)
     {
         if (!$id) {
             return redirect('/notfund')->withInput()->with('message', 'Course ID is required');
@@ -217,7 +230,166 @@ class CourseController extends Controller
         if ($course->user_id != auth('admin')->user()->id) {
             return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
         }
-        return view('pages.teacher.course_curriculum_lecture', compact('course'));
+        if (!$section_id) {
+            return redirect()->back()->with('error', 'Section ID is required');
+        }
+        $section = CourseSection::find($section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+
+        if (!$step_id) {
+            return redirect()->back()->with('error', 'Missing step ID');
+        }
+        $step = CourseStep::find($step_id);
+        if (!$step) {
+            return redirect()->back()->with('error', 'Step not found');
+        }
+        if ($request->title != '' && $request->title != $step->title) {
+            $step->title = $request->title;
+            $step->save();
+        }
+        return redirect()->back()->with('success', 'Update Step Success');
+
+
+    }
+    public function _course_curriculum_section($id, $section_id, Request $request)
+    {
+        if (!$id) {
+            return redirect('/notfund')->withInput()->with('message', 'Course ID is required');
+        }
+        $course = Course::find($id);
+        if (!$course) {
+            return redirect('/notfund')->withInput()->with('message', "Course ID {$id} not found");
+        }
+        if ($course->user_id != auth('admin')->user()->id) {
+            return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
+        }
+        if (!$section_id) {
+            return redirect()->back()->with('error', 'Section ID is required');
+        }
+        $section = CourseSection::find($section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+        $validate = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'type' => 'required|string'
+        ]);
+        if ($validate->fails()) {
+            return redirect()->back()->withInput()->with('error', 'Required title and type');
+        }
+        CourseStep::create([
+            'uuid' => Str::uuid(),
+            'section_id' => $section_id,
+            'title' => $request->title,
+            'type' => $request->type
+        ]);
+        return redirect()->back()->with('success', 'Created new step successfully!');
+
+
+    }
+    public function course_curriculum_lecture($id, $section_id, $step_id)
+    {
+        if (!$id) {
+            return redirect('/notfund')->withInput()->with('message', 'Course ID is required');
+        }
+        $course = Course::find($id);
+        if (!$course || !$section_id || !$step_id) {
+            return redirect('/notfund')->withInput()->with('message', "Missing ID course or section ID or step ID");
+        }
+        if ($course->user_id != auth('admin')->user()->id) {
+            return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
+        }
+
+        $section = CourseSection::find($section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+        $step = CourseStep::where('id', $step_id)->with('lecture')->first();
+        if (!$step) {
+            return redirect()->back()->with('error', 'Step not found');
+        }
+
+
+        return view('pages.teacher.course_curriculum_lecture', compact('course', 'section', 'step'));
+    }
+    public function _course_curriculum_lecture($id, $section_id, $step_id, Request $request)
+    {
+        if (!$id) {
+            return redirect('/notfund')->withInput()->with('message', 'Course ID is required');
+        }
+        $course = Course::find($id);
+        if (!$course || !$section_id || !$step_id) {
+            return redirect('/notfund')->withInput()->with('message', "Missing ID course or section ID or step ID");
+        }
+        if ($course->user_id != auth('admin')->user()->id) {
+            return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
+        }
+
+        $section = CourseSection::find($section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+        $step = CourseStep::find($step_id);
+        if (!$step) {
+            return redirect()->back()->with('error', 'Step not found');
+        }
+        $validate = Validator::make($request->all(), [
+            'description' => 'required|string'
+        ]);
+        if ($validate->fails()) {
+            return redirect()->back()->withInput()->with('error', 'Required description');
+        }
+        $mess = 'Update lecture information successfully!';
+        $type_mess = 'success';
+
+        $lecture = CourseLecture::find($step->id);
+        if (!$lecture) {
+            $lecture = new CourseLecture();
+            $lecture->step_id = $step_id;
+            $lecture->uuid = Str::uuid();
+        }
+        // check video
+
+        if ($request->checkvideo) {
+            if ($request->checkvideo == 'videopc' && $request->hasFile('video')) {
+                $file = Cloudinary::uploadVideo($request->video->getRealPath());
+
+                $publicId = $file->getPublicId();
+
+                $videoDetails = Cloudinary::admin()->getResource($publicId, ['resource_type' => 'video']);
+
+                // Extract video duration
+                $duration = $videoDetails['duration'];
+                dd($duration);
+                // get duration clound
+                $lecture->video_type = 'local';
+                $lecture->duration = $duration;
+                $lecture->video_url = $file->getSecurePath();
+            } else if ($request->checkvideo == 'videoyoutube' && $request->video && $request->video != '') {
+                $videoService = new YouTubeService();
+                $checkVideo = $videoService->getVideoInfo($request->video);
+                if ($checkVideo) {
+                    $duration = $checkVideo['duration']['total_seconds'];
+                    $file = 'https://www.youtube.com/embed/' . $request->video;
+                    $lecture->video_type = 'youtube';
+                    $lecture->video_url = $file;
+                    $lecture->duration = $duration;
+
+                    $lecture->save();
+                } else {
+                    $type_mess = 'error';
+                    $mess = 'Invalid YouTube video id';
+                }
+            }
+        }
+        if ($request->description != $lecture->description) {
+            $lecture->description = $request->description;
+        }
+        $lecture->save();
+
+        return redirect()->back()->with($type_mess, $mess);
     }
     public function course_curriculum_quiz($id, $section_id, $step_id)
     {

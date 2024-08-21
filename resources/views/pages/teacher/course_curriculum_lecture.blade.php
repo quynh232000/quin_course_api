@@ -10,77 +10,98 @@
 
 @section('content')
     <div class="p-4 fw-bold fs-5 border-bottom">
-        <a href="/course/1/manage/curriculum">Curriculum</a> / <a href="/course/1/manage/curriculum/section/3"> Section</a> / <a href=""> Step</a>
+        <a href="/course/{{ $course->id }}/manage/curriculum">Curriculum</a> / <a
+            href="/course/${{ $course->id }}/manage/curriculum/section/{{ $section->id }}"> Section</a> / <span>
+            Step</span>
     </div>
-    <div class="p-4">
-        <div class="fw-bold text-success mb-4">Section 1: Introduction > Lecture 1</div>
+
+    <div>
+        @if (session('error'))
+            <div class="alert alert-danger py-2 text-white">{{ session('error') }}</div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success py-2 text-white">{{ session('success') }}</div>
+        @endif
+    </div>
 
 
-        <div class="border-top mt-4 pt-4 d-flex flex-column gap-2">
-            <div class="border-info p-2 px-3 pb-0 mt-2" style="border:1px dashed green">
-                <div class="form-group">
-                    <label for="" class="form-label">Title Lecture:</label>
-                    <input type="text" class="form-control" placeholder="Enter a Title">
-                    <label for="" class="form-label">Quiz Description:</label>
-                    <input type="text" class="form-control" placeholder="Enter question quiz">
-                    <div class="d-flex justify-content-end gap-2 mt-4">
-                        <button class="btn btn-sm btn-outline-primary">Save</button>
-                    </div>
-                </div>
-            </div>
-
+    <form method="post" class="p-4" enctype="multipart/form-data">
+        @csrf
+        <div class="fw-bold text-success mb-4">{{ $section->title }} <span class="text-dark px-2">/</span>
+            {{ $step->title }}
         </div>
 
-        <div class="py-3">
-            <div class="mb-2 mt-2">
-                <label for="" class="fs-6">Resourse video</label>
-                <div class="row">
-                    <div class="col-md-5 ">
-                        <div class=" " style="height: 186px">
-                            <label for="video"
-                                class=" w-100 h-100 d-flex justify-content-center align-items-center border   rounded-2">
+
+        <div class="mb-2 mt-2">
+            <label for="" class="fs-6">Promotional video</label>
+            <div class="row">
+                <div class="col-md-5 ">
+                    <div class=" " style="height: 186px">
+                        <label id="preview-video" for="video"
+                            class=" w-100 h-100 d-flex justify-content-center align-items-center border   rounded-2">
+                            @if ($step->lecture && $step->lecture->video_url)
+                                @if ($step->lecture->video_type == 'local')
+                                    <video class="w-100 h-100 object-fit-cover rounded-2" controls>
+                                        <source src="{{ $step->lecture->video_url }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @else
+                                    <iframe class="w-100 h-100 object-fit-cover" src="{{ $step->lecture->video_url }}"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                                    </iframe>
+                                @endif
+                            @else
                                 <i class="fa-brands fa-youtube" style="font-size: 80px"></i>
-                                {{-- <img style="width: 100%;height:100%" class="w-100 h-100 object-fit-cover rounded-2" src="https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg" alt=""> --}}
+                            @endif
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <p class="fs-8 lh-sm">Your promo video is a quick and compelling way for students to preview what
+                        they’ll learn in your course. Students considering your course are more likely to enroll if your
+                        promo video is well-made.</p>
+                    {{-- <div>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" accept="video/*" id="video">
+                        </div>
+                    </div> --}}
+                    <div class="d-flex justify-content-between py-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="checkvideo" id="radioimage3" checked
+                                value="videopc">
+                            <label class="form-check-label" for="radioimage3">
+                                Upload from PC
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="checkvideo" value="videoyoutube"
+                                id="radioimage4">
+                            <label class="form-check-label" for="radioimage4">
+                                From Youtube
                             </label>
                         </div>
                     </div>
-                    <div class="col-md-7">
-                        <p class="fs-8 lh-sm">Your promo video is a quick and compelling way for students to preview what they’ll learn in your course. Students considering your course are more likely to enroll if your promo video is well-made.</p>
-                        {{-- <div>
-                            <div class="input-group mb-3">
-                                <input type="file" class="form-control" accept="video/*" id="video">
-                            </div>
-                        </div> --}}
-                        <div class="d-flex justify-content-between py-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="checkvideo" id="radioimage3"
-                                    checked value="imagepc">
-                                <label class="form-check-label" for="radioimage3">
-                                    Upload from PC
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="checkvideo" value="imageyoutube"
-                                    id="radioimage4">
-                                <label class="form-check-label" for="radioimage4">
-                                    From Youtube
-                                </label>
-                            </div>
+                    <div>
+                        <div class="input-group mb-2 ">
+                            <input type="file" name="video" class="form-control border rounded-2" accept="video/*"
+                                id="inputvideo" placeholder="id video youtube">
+                            <div class="btn btn-info btn-sm d-none mb-0" id="btn-check-video">Check</div>
+
                         </div>
                         <div>
-                            <div class="input-group mb-3">
-                                <input type="file" class="form-control" accept="video/*" id="inputvideo"
-                                    placeholder="id video youtube">
-                            </div>
+                            <small class="text-danger" id="error-video"></small>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
         <div class="mb-2">
             <label for="" class="fs-6">Description</label>
             <div class="form-group">
-                <div id="editor-container" style="min-height: 220px"></div>
+                <div id="editor-container" style="min-height: 220px">{!! $step->lecture ? $step->lecture->description : '' !!}</div>
                 <input type="hidden" name="description" id="description">
                 <div class="fs-8 mt-1">Use 1 or 2 related keywords, and mention 3-4 of the most important areas that
                     you've
@@ -88,22 +109,69 @@
             </div>
         </div>
 
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary w-100">Save</button>
+        </div>
 
 
-    </div>
+
+    </form>
 @endsection
 @section('js')
-<script>
-     var quill = new Quill('#editor-container', {
+    <script>
+        var quill = new Quill('#editor-container', {
             theme: 'snow' // or 'bubble'
         });
-     // select radio video
-     $("input[name='checkvideo']").change(function() {
-            if ($(this).val() == 'imagepc') {
+
+        var form = document.querySelector('form');
+        form.onsubmit = function() {
+            var contentInput = document.querySelector('input[name="description"]');
+            contentInput.value = quill.root.innerHTML;
+        };
+        // select radio video
+        $("input[name='checkvideo']").change(function() {
+            if ($(this).val() == 'videopc') {
                 $("#inputvideo").attr('type', 'file')
+                $("#btn-check-video").addClass('d-none')
             } else {
+                $("#btn-check-video").removeClass('d-none')
                 $("#inputvideo").attr('type', 'text')
             }
         })
-</script>
+        // preview video 
+        $('input[name="video"]').on('change', function(e) {
+            if ($(this).attr('type') == 'file') {
+                const [file] = e.target.files
+                if (file) {
+                    const url = URL.createObjectURL(file)
+                    $("#preview-video").html(`
+                        <video class="w-100 h-100 object-fit-cover rounded-2"  controls>
+                                        <source src="${url}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                    `)
+                }
+            }
+        })
+        // check image video by id 
+        $("#btn-check-video").on('click', function() {
+            $("#error-video").text("")
+            const value = $("input[name='video']").val();
+            if (value) {
+                $.ajax('/api/common/video/getinfo/' + value).done(res => {
+                    if (res.status) {
+                        $("#preview-video").html(`
+                        <iframe class="w-100 h-100 object-fit-cover" src="https://www.youtube.com/embed/${value}"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                        </iframe>
+                        `)
+                    } else {
+                        $("#error-video").text(res.message)
+                    }
+                })
+            }
+        })
+    </script>
 @endsection
