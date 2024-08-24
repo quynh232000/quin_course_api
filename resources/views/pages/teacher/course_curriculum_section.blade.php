@@ -89,7 +89,8 @@
                                     </a>
                                 @endif
 
-                                <a title="Delete" href="{{ url('courses/delete_section/' . $course->id . '/1') }}"
+                                <a title="Delete"
+                                    href="{{ route('course.manage.delete_step', ['id' => $course->id, 'section_id' => $section->id, 'step_id' => $item->id]) }}"
                                     onclick="return confirm('Are you sure you want to delete this section')"
                                     class="text-danger mb-0 border py-1 px-2"><i class="fa-solid fa-trash-can"></i></a>
 

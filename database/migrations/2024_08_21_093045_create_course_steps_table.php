@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('type');
             $table->integer('priority')->default(0);
             $table->boolean('is_preview')->default(false);
+            $table->integer('duration')->nullable()->default(60);
             $table->softDeletes();
             $table->timestamps();
         });

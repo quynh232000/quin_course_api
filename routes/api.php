@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Commoncontroller;
 use App\Http\Controllers\Api\UserController;
@@ -31,7 +32,10 @@ Route::prefix('common')->group(function () {
 });
 Route::prefix('/category')->group(function(){
     Route::get('/get_child/{id}', [CategoryController::class, 'get_child']);
+    Route::get('/all', [CategoryController::class, 'all']);
 });
+Route::get('/banners', [BannerController::class, 'all']);
+
 
 // Route::middleware([JwtMiddleware::class])->group(function () {
 //     Route::get('me', [AuthController::class, 'me']);
@@ -41,7 +45,5 @@ Route::prefix('/category')->group(function(){
 //         Route::post('/update_profile', [AuthController::class, 'update_profile']);
 //         Route::post('/change_password', [AuthController::class, 'change_password']);
 //     });
-
-
 // });
 

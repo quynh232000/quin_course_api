@@ -131,9 +131,10 @@
     <script>
         function exportToPDF() {
             const element = document.querySelector('.certificate-container');
+            const username = 'Certificate_' + `{{ auth('admin')->user()->username }}`;
             html2pdf(element, {
                 margin: 10,
-                filename: 'certificate.pdf',
+                filename: username.toUpperCase() + '.pdf',
                 image: {
                     type: 'jpeg',
                     quality: 0.98

@@ -4,6 +4,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\LevelController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Common\VideoController;
 use App\Http\Middleware\AdminRoleMiddleware;
+use App\Http\Middleware\MineCourseMiddleware;
 use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\TeacherInfoMiddleWare;
 use App\Models\LevelCourse;
@@ -41,6 +43,14 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
         Route::post("/update/{id}", [LevelController::class, 'update'])->middleware([PermissionMiddleware::class . ':Admin edit']);
         Route::post("/{id}", [LevelController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
         Route::get("/delete/{id}", [LevelController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
+    });
+    Route::prefix("/banners")->group(function () {
+        Route::get("/", [BannerController::class, 'index'])->name('admin.banner.list');
+        Route::get("/create", [BannerController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner.create');
+        Route::post("/create", [BannerController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner._create');
+        Route::get("/update/{id}", [BannerController::class, 'update'])->name('admin.banner.update');
+        Route::post("/update/{id}", [BannerController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner._update');
+        Route::get("/delete/{id}", [BannerController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.banner.delete');
     });
 
     Route::prefix("/users")->group(function () {
@@ -77,9 +87,16 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
             Route::get('section/{section_id}',[CourseController::class, 'course_curriculum_section'])->name('course.manage.course_curriculum_section');      
             Route::post('section/{section_id}',[CourseController::class, '_course_curriculum_section'])->name('course.manage._course_curriculum_section');      
             Route::post('section/{section_id}/{step_id}',[CourseController::class, 'edit_title_section_step'])->name('course.manage._course_curriculum_section_step');      
+            Route::get('section/{section_id}/delete/{step_id}',[CourseController::class, 'delete_step'])->name('course.manage.delete_step');      
             Route::get('section/{section_id}/lecture/{step_id}',[CourseController::class, 'course_curriculum_lecture'])->name('course.manage.course_curriculum_lecture');      
             Route::post('section/{section_id}/lecture/{step_id}',[CourseController::class, '_course_curriculum_lecture'])->name('course.manage._course_curriculum_lecture');      
             Route::get('section/{section_id}/quiz/{step_id}',[CourseController::class, 'course_curriculum_quiz'])->name('course.manage.course_curriculum_quiz');      
+            Route::post('section/{section_id}/quiz/{step_id}',[CourseController::class, 'course_quiz_addanswer'])->name('course.manage.course_quiz_addanswer');      
+            Route::post('section/{section_id}/quiz/{step_id}/addquestion',[CourseController::class, 'quiz_addquestion'])->name('course.quiz_addquestion');      
+            Route::post('section/{section_id}/quiz/{step_id}/quiz_setduration',[CourseController::class, 'quiz_setduration'])->name('course.quiz_setduration');      
+            Route::get('section/{section_id}/quiz/{step_id}/deleteanswer/{answer_id}',[CourseController::class, 'quiz_deleteanswer'])->name('course.quiz_deleteanswer');      
+           
+           
             Route::get('section/{section_id}/asm/{step_id}',[CourseController::class, 'course_curriculum_asm'])->name('course.manage.course_curriculum_asm');      
            
         });
@@ -90,7 +107,13 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
         Route::get('{id}/manage/certificate', [CourseController::class, 'course_certificate'])->name('course.manage.course_certificate');
         Route::post('{id}/manage/certificate', [CourseController::class, '_course_certificate'])->name('course.manage._course_certificate');
         Route::get('instructor', [CourseController::class, 'instructor'])->name('course.instructor');
-        Route::get('delete/{id}', [CourseController::class, 'delete'])->name('course.delete');
+        Route::get('delete/{id}', [TeacherController::class, 'deletecourse'])->name('course.delete');
+
+        Route::prefix('preview/{id}')->middleware([MineCourseMiddleware::class.':course_id'])->group(function () {
+            Route::get('/',[CourseController::class, 'preview'])->name('preview');
+            Route::get('/{type}/{uuid}',[CourseController::class, 'preview_home'])->name('preview_home');
+            Route::post('/published_course',[CourseController::class, 'published_course'])->name('published_course');
+        });
     });
     Route::get('/notfund', function () {
         return view('pages.notfund');
@@ -102,24 +125,5 @@ Route::prefix("/auth")->group(function () {
 });
 
 
-// Route::post('courses',[TeacherController::class,'_courses']);
-// Route::get('course/{id}',[TeacherController::class,'course']);
-// Route::post('course/{id}',[TeacherController::class,'_course']);
-// Route::get('course/{id}/delete',[TeacherController::class,'deleteCourse']);
-// Route::post('course/{id}/delete',[TeacherController::class,'_deleteCourse']);
-// Route::get('course/{id}/edit',[TeacherController::class,'editCourse']);
-// Route::post('course/{id}/edit',[TeacherController::class,'_editCourse']);
-// Route::get('course/{id}/addmaterial',[TeacherController::class,'addMaterial']);
-// Route::post('course/{id}/addmaterial',[TeacherController::class,'_addMaterial']);
 
-// Route::get('/login', function () {
-//     return view('login');
-// })->name('login');
-// Route::post('/login', [AdminController::class, 'login_']);
-
-// Route::middleware([AdminMiddleware::class])->group(function () {
-//     Route::get('/', [AdminController::class, 'list'])->name('list');
-
-
-// });
 

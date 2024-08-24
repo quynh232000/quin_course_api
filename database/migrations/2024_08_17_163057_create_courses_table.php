@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->text('completed_content')->nullable();
             $table->string('price')->nullable();
             $table->double('percent_sale')->default(0);
-            $table->string('level_id')->default(0);
+            $table->string('level_id')->nullable();
             $table->integer('priority')->default(0);
             $table->string('category_id');
             $table->string('type')->default('course');

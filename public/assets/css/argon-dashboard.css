@@ -5385,16 +5385,20 @@ fieldset:disabled .btn {
 
 .accordion-button:not(.collapsed)::after {
   background-image: var(--bs-accordion-btn-active-icon);
+  background-image: url('https://icons.veryicon.com/png/o/miscellaneous/simple-and-round-line-mark/down-arrow-56.png');
   transform: var(--bs-accordion-btn-icon-transform);
 }
 
 .accordion-button::after {
   flex-shrink: 0;
-  width: var(--bs-accordion-btn-icon-width);
-  height: var(--bs-accordion-btn-icon-width);
+  width: var(--bs-accordion-btn-icon-width); 
+   height: var(--bs-accordion-btn-icon-width);
+ 
+  /* background-color: red !important; */
   margin-left: auto;
   content: "";
-  background-image: var(--bs-accordion-btn-icon);
+  /* background-image: var(--bs-accordion-btn-icon); */
+  background-image: url('https://icons.veryicon.com/png/o/miscellaneous/simple-and-round-line-mark/down-arrow-56.png');
   background-repeat: no-repeat;
   background-size: var(--bs-accordion-btn-icon-width);
   transition: var(--bs-accordion-btn-icon-transition);

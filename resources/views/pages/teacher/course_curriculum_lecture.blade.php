@@ -11,7 +11,7 @@
 @section('content')
     <div class="p-4 fw-bold fs-5 border-bottom">
         <a href="/course/{{ $course->id }}/manage/curriculum">Curriculum</a> / <a
-            href="/course/${{ $course->id }}/manage/curriculum/section/{{ $section->id }}"> Section</a> / <span>
+            href="/course/{{ $course->id }}/manage/curriculum/section/{{ $section->id }}"> Section</a> / <span>
             Step</span>
     </div>
 
@@ -85,6 +85,7 @@
                     </div>
                     <div>
                         <div class="input-group mb-2 ">
+                            <input type="text" name="duration" value="0" id="duration" hidden>
                             <input type="file" name="video" class="form-control border rounded-2" accept="video/*"
                                 id="inputvideo" placeholder="id video youtube">
                             <div class="btn btn-info btn-sm d-none mb-0" id="btn-check-video">Check</div>
@@ -145,11 +146,15 @@
                 if (file) {
                     const url = URL.createObjectURL(file)
                     $("#preview-video").html(`
-                        <video class="w-100 h-100 object-fit-cover rounded-2"  controls>
+                        <video id='videoel' class="w-100 h-100 object-fit-cover rounded-2"  controls>
                                         <source src="${url}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                     `)
+                    $('#videoel').on('loadedmetadata', function() {
+                        const duration = Math.floor(this.duration);
+                        $('#duration').val(duration);
+                    });
                 }
             }
         })

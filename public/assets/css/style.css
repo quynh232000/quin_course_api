@@ -1,5 +1,6 @@
 :root{
-    --primary:#9254ff
+    --primary:#9254ff;
+    --gray:gray;
 }
 .object-fit-cover{
     object-fit: cover;
@@ -42,4 +43,7 @@
 }
 .w-fit{
     width: fit-content;
+}
+.text-gray{
+    color: var(--gray) !important;
 }

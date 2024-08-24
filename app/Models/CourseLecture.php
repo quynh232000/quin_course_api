@@ -17,7 +17,6 @@ class CourseLecture extends Model
         'video_url',
         'video_type',
         'video',
-        'duration',
         'priority',
         'is_show'
     ];

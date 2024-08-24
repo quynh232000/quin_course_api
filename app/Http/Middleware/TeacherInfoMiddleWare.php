@@ -15,10 +15,7 @@ class TeacherInfoMiddleWare
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-
         $userRoles = auth('admin')->user()->roles()->toArray();//delete admin 
-
-
         if (array_intersect($roles, $userRoles) && auth('admin')->user()->isVerifyTeacher()) {
             return $next($request);
         }

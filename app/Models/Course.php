@@ -35,4 +35,125 @@ class Course extends Model
         'status',
 
     ];
+    public function progress()
+    {
+        $data = [
+            'intend' => [],
+            'curriculum' => [],
+            'landing' => [],
+            'pricing' => [],
+            'certificate' => [],
+        ];
+        $status = true;
+        // check intended 
+        $whatlearn = CourseIntend::where(['course_id' => $this->id, 'type' => 'whatlearn'])->count();
+        if ($whatlearn < 4) {
+            $data['intend'][] = "Specify at least 4 of your course's learning objectives";
+            $status = false;
+        }
+        $require = CourseIntend::where(['course_id' => $this->id, 'type' => 'require'])->count();
+        if ($require < 0) {
+            $data['intend'][] = "Specify any course requirements or prerequisites";
+            $status = false;
+        }
+        $whofor = CourseIntend::where(['course_id' => $this->id, 'type' => 'whofor'])->count();
+        if ($whofor < 0) {
+            $data['intend'][] = "Specify who this course if for";
+            $status = false;
+        }
+        // check curriculum
+        if (!$this->sections() || ($this->sections())->count() < 5) {
+            $data['curriculum'][] = "Create at least 5 sections for your course";
+            $status = false;
+        }
+        // check landing page
+        if ($this->sub_title == null || $this->sub_title == '') {
+            $data['landing'][] = 'Have a course Subtitle';
+            $status = false;
+        }
+        if ($this->description == null || $this->description == '') {
+            $data['landing'][] = 'Have a course description';
+            $status = false;
+        }
+        if ($this->level_id == null || $this->level_id == '') {
+            $data['landing'][] = 'Select level for this course';
+            $status = false;
+        }
+        if ($this->image_url == null || $this->image_url == '') {
+            $data['landing'][] = 'Upload image for this course';
+            $status = false;
+        }
+        if ($this->video_url == null || $this->video_url == '') {
+            $data['landing'][] = 'Upload video introduction for this course';
+            $status = false;
+        }
+        // check price
+        if ($this->price == null) {
+            $data['pricing'][] = "Select a price for your course";
+            $status = false;
+        }
+        // check certificate
+        if ($this->certificate_name == null || $this->certificate_name == '') {
+            $data['certificate'][] = "Provide a certificate name ";
+            $status = false;
+        }
+
+        // process percent 
+        $totalpercent = 100;
+        $progress = [
+            'intend' => true,
+            'curriculum' => true,
+            'landing' => true,
+            'pricing' => true,
+            'certificate' => true,
+        ];
+        if ($data['intend'] && count($data['intend']) > 0) {
+            $progress['intend'] = false;
+            $totalpercent -= 20;
+        }
+        if ($data['curriculum'] && count($data['curriculum']) > 0) {
+            $progress['curriculum'] = false;
+            $totalpercent -= 20;
+        }
+        if ($data['landing'] && count($data['landing']) > 0) {
+            $progress['landing'] = false;
+            $totalpercent -= 20;
+        }
+        if ($data['pricing'] && count($data['pricing']) > 0) {
+            $progress['pricing'] = false;
+            $totalpercent -= 20;
+        }
+        if ($data['certificate'] && count($data['certificate']) > 0) {
+            $progress['certificate'] = false;
+            $totalpercent -= 20;
+        }
+        return ['status' => $status, 'data' => $data, 'total_percent' => $totalpercent, 'progress' => $progress];
+    }
+    public function sections()
+    {
+        return $this->hasMany(CourseSection::class, 'course_id');
+    }
+    public function first_section(){
+        return $this->sections()->first();
+    }
+    public function intends(){
+        return $this->hasMany(CourseIntend::class,'course_id');
+    }
 }
+
+
+  //  else {
+        //     $i = 0;
+        //     foreach ($this->sections() as $key => $item) {
+        //         if ($item->step->lecture) {
+        //             $i++;
+        //             if ($i > 4) {
+        //                 break;
+        //             }
+        //         }
+        //     }
+        //     if ($i < 4) {
+        //         $data['curriculum'][] = "Create at least 5 lectures ";
+        //         $status = false;
+        //     }
+        // }

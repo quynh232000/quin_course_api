@@ -5,6 +5,41 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/banners": {
+            "get": {
+                "tags": [
+                    "Banner"
+                ],
+                "summary": "Get all banners",
+                "description": "Returns list banners",
+                "operationId": "getallbanner",
+                "parameters": [
+                    {
+                        "name": "placement",
+                        "in": "query",
+                        "description": "Where banner will show. Ex: home,detail,...",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Position banner will apperance in this page. Ex: slider,ads,...",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
         "/api/category/get_child/{id}": {
             "get": {
                 "tags": [
@@ -18,12 +53,27 @@
                         "name": "id",
                         "in": "path",
                         "description": "id category child",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
                     }
                 ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/category/all": {
+            "get": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get all categories",
+                "description": "Returns list categories",
+                "operationId": "getallcategory",
                 "responses": {
                     "400": {
                         "description": "Invalid ID supplied"

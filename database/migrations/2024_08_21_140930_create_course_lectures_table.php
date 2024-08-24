@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('video_url')->nullable();
             $table->string('video_type')->nullable();
             $table->string('video')->nullable();
-            $table->integer('duration')->nullable()->default(60);
+            // $table->integer('duration')->nullable()->default(60);
             $table->integer('priority')->default(0);
             $table->boolean('is_show')->default(true);
             $table->softDeletes();

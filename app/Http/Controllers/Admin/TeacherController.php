@@ -132,24 +132,41 @@ class TeacherController extends Controller
                 $slug = Str::slug($data['title']);
                 $countSlug = Course::where('slug', $slug)->count();
                 if ($countSlug > 0) {
-                    $slug.= "-". $countSlug;
+                    $slug .= "-" . $countSlug;
                 }
                 $course = Course::create([
                     'user_id' => auth('admin')->user()->id,
                     'slug' => $slug,
                     'title' => $data['title'],
                     'type' => $data['type'],
-                    'category_id' =>$data['category_id']
+                    'category_id' => $data['category_id']
                 ]);
                 session()->forget('step');
                 session()->forget('currrentstep');
                 return redirect()->route('course.manage.goals', ['id' => $course->id]);
-                
-               
+
+
             default:
                 return redirect()->back();
 
         }
         return redirect('course/create/' . ($step + 1));
+    }
+    public function deletecourse($id)
+    {
+        if (!$id) {
+            return redirect()->back()->with('error', 'ID course is required');
+        }
+        $course = Course::find($id);
+        if (!$course) {
+            return redirect()->back()->with('error', 'Course not found');
+        }
+        if ($course->user_id !== auth('admin')->user()->id) {
+            if (!in_array('Super Admin', auth('admin')->user()->roles()->toArray())) {
+                return redirect()->back()->with('error', 'You are not authorized to delete this course');
+            }
+        }
+        $course->delete();
+        return redirect()->back()->with('success', 'Deleted course successfully!');
     }
 }

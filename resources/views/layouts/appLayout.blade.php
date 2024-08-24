@@ -15,7 +15,7 @@
     <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
 
-    
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
@@ -83,6 +83,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link " href="/banners">
+                            <div class=" ms-2 me-2 text-info text-sm opacity-10">
+                                <i class="fa-solid fa-images"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Banners</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link " href="/users">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center text-info me-2 d-flex align-items-center justify-content-center">
@@ -140,7 +148,7 @@
                         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/users/{{auth('admin')->user()->uuid}}">
+                        <a class="nav-link " href="/users/{{ auth('admin')->user()->uuid }}">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -149,7 +157,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/users/{{auth('admin')->user()->uuid}}">
+                        <a class="nav-link " href="/users/{{ auth('admin')->user()->uuid }}">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
@@ -196,11 +204,12 @@
             <div class="container-fluid py-1 px-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white"
-                                href="/">Home</a></li>
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="/">Home</a>
+                        </li>
                         {{-- <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li> --}}
                     </ol>
-                    <h6 class="font-weight-bolder text-white mb-0"><a href="/" class="text-white">Quin Course</a></h6>
+                    <h6 class="font-weight-bolder text-white mb-0"><a href="/" class="text-white">Quin
+                            Course</a></h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -330,10 +339,12 @@
             </div>
         </nav>
         <!-- End Navbar -->
-        <div class="container-fluid py-4 d-flex flex-column justify-content-between  flex-1">
+        {{-- <div class="container-fluid py-4 d-flex flex-column justify-content-between  flex-1"> --}}
+        <div class=" d-flex flex-column justify-content-between  flex-1 ">
             {{-- main --}}
-            <div class="flex-1">
+            <div class="flex-1 d-flex" >
                 @yield('main')
+                
             </div>
             {{-- main --}}
             <footer class="footer pt-3  ">
@@ -570,7 +581,7 @@
     <!-- Github buttons -->
     {{-- <script async defer src="https://buttons.github.io/buttons.js"></script> --}}
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-   
+
     {{-- <script src="{{ asset('assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script> --}}
     <script src="{{ asset('assets/js/argon-dashboard.js?v=2.0.4') }}"></script>
     @yield('js')
