@@ -872,6 +872,7 @@ class CourseController extends Controller
         } else {
             $course->published_at = Carbon::now();
             $mess = 'Course is published';
+            $course->duration = $course->duration();
         }
         $course->save();
         return redirect()->back()->with('message', $mess);

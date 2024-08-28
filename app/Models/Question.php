@@ -15,4 +15,8 @@ class Question extends Model
         'parent_id',
         'from'
     ];
+    protected $hidden = [
+        "created_at",
+        'updated_at'
+    ];
 }

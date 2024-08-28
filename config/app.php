@@ -124,10 +124,13 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-   
+    // 'providers' => [
+    //     Laravel\Socialite\SocialiteServiceProvider::class,
+    // ],
     'aliases' => Facade::defaultAliases()->merge([
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 
 

@@ -79,4 +79,8 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
+    public function isEnrolled($couse_id): bool
+    {
+        return Enrollment::where(['user_id' => $this->id, 'course_id' => $couse_id])->exists();
+    }
 }

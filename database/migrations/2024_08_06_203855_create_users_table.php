@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('full_name');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('full_name')->nullable();
             $table->string('username');
             $table->string('email')->unique();
             $table->string('phone_number')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('thumbnail_url')->nullable();
             $table->string('birthday')->nullable(); // Only one birthday column
             $table->string('address')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->boolean('is_blocked')->default(0);
             $table->boolean('is_pro')->default(0);
             $table->boolean('is_comment_blocked')->default(0);

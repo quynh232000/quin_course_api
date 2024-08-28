@@ -20,4 +20,8 @@ class CourseLecture extends Model
         'priority',
         'is_show'
     ];
+    protected $hidden = [
+        "created_at",
+        'updated_at'
+    ];
 }

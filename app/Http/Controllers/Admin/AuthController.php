@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
+use Str;
 
 class AuthController extends Controller
 {
     public function login()
     {
+        if(auth('admin')->check()){
+            return redirect('/');
+        }
         return view("pages.login");
     }
     public function _login(Request $request)
@@ -39,5 +45,51 @@ class AuthController extends Controller
     {
         auth('admin')->logout();
         return redirect('/auth/login');
+    }
+    public function redirect($provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+    public function callback($provider)
+    {
+        $data = Socialite::driver($provider)->user();
+        $email = $data->user['email'];
+        $checkUser = User::where('email', $email)->first();
+        if ($checkUser) {
+            auth('admin')->login($checkUser);
+        } else {
+            if ($provider == 'google') {
+                $avatar = $data->user['picture'];
+                $first_name = $data->user['family_name'];
+                $last_name = $data->user['given_name'];
+                $username = explode('@', $data->user['email'])[0];
+            } else {
+                $avatar = $data->user['avatar_url'];
+                $first_name = '';
+                $last_name = $data->user['name'];
+                $username = $data->nickname;
+
+            }
+            $newUser = User::create([
+                'uuid'=>Str::uuid(),
+                'email' => $email,
+                'full_name' => $data->user['name'],
+                'avatar_url' => $avatar,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'username' => $username,
+            ]);
+            UserRole::create([
+                'user_id' => $newUser->id,
+                'role_id' => 1,
+            ]);
+            auth('admin')->login($newUser);
+        }
+
+        $redirect_url = session('redirect_url') ?? '/';
+        session()->forget('redirect_url');
+        return redirect($redirect_url);
+
+
     }
 }

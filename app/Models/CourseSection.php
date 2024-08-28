@@ -18,6 +18,10 @@ class CourseSection extends Model
         'priority',
         'is_show'
     ];
+    protected $hidden = [
+        "created_at",
+        'updated_at'
+    ];
     public function steps(){
         return $this->hasMany(CourseStep::class, 'section_id');
     }
@@ -29,6 +33,7 @@ class CourseSection extends Model
     }
     public function total_duration(){
         $total_duration = 0;
+
         foreach ($this->steps as $step){
             $total_duration += $step->duration;
         }

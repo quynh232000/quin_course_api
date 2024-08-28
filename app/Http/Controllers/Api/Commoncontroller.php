@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Response;
+use App\Models\Tag;
+use Exception;
 use Illuminate\Http\Request;
 
 
@@ -29,4 +31,5 @@ class Commoncontroller extends Controller
         $allBanks = Bank::all();
         return Response::json(true, 'ok', $allBanks);
     }
+ 
 }

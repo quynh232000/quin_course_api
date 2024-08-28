@@ -16,6 +16,10 @@ class Category extends Model
         "name",
         "parent_id"
     ];
+    protected $hidden = [
+        "created_at",
+        'updated_at'
+    ];
     // public function children()
     // {
     //     return $this->hasMany(Category::class, 'parent_id');

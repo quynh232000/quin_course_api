@@ -19,6 +19,10 @@ class CourseStep extends Model
         'is_preview',
         'duration'
     ];
+    protected $hidden = [
+        "created_at",
+        'updated_at'
+    ];
     public function lecture()
     {
         return $this->hasOne(CourseLecture::class, 'step_id');

@@ -137,13 +137,15 @@
                 <div class="col-md-4">
                     <div class="card card-profile">
                         <label for="image_banner">
-                            @if (isset($banner))
+                            <div id="img_thumb">
+                                @if (isset($banner))
                                 <img src="{{ $banner->banner_url }}" alt="Image placeholder"
-                                    class="card-img-top object-fit-cover">
+                                    class="img-custom object-fit-cover">
                             @else
                                 <img src="https://img.pikbest.com/origin/09/30/65/27hpIkbEsTzdI.jpg!sw800"
-                                    alt="Image placeholder" class="card-img-top object-fit-cover">
+                                    alt="Image placeholder" class="img-custom object-fit-cover">
                             @endif
+                            </div>
                         </label>
                         <input type="file" name="image" accept="image/*" id="image_banner" hidden>
                         <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
@@ -160,7 +162,7 @@
                                 const [file] = e.target.files
                                 if (file) {
                                     const url = URL.createObjectURL(file)
-                                    $(".card-img-top").attr('src', url)
+                                    $(".img-custom").attr('src', url)
 
                                 }
                             })

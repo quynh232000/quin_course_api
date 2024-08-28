@@ -40,6 +40,493 @@
                 }
             }
         },
+        "/api/blogs/all": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Get list blogs",
+                "description": "Returns list blogs",
+                "operationId": "getblogs",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/blogs/{slug}": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "description": "Returns blog information",
+                "operationId": "Get blog detail",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Blog slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/blogs/my_blogs": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "description": "Returns your list blogs",
+                "operationId": "myblogs",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blogs/{blog_id}/same_author": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "description": "Returns your list blogs",
+                "operationId": "bogsameauthor",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "blog_id",
+                        "in": "path",
+                        "description": "bog_id og thif current blog",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/blogs/tag/{tag_slug}": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "description": "Returns  list blogs by tag slug",
+                "operationId": "blog_by_tag_slug",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "tag_slug",
+                        "in": "path",
+                        "description": "bog_id og thif current blog",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/tags/all": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Get list Tags",
+                "description": "Returns list tags",
+                "operationId": "alltags",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/blogs/create": {
+            "post": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Create a new blog",
+                "description": "Returns new new blog information",
+                "operationId": "create_blog",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of the new blog",
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "description": "Content of the new blog",
+                                        "type": "string"
+                                    },
+                                    "tag_id": {
+                                        "description": "Tag ID of the new blog",
+                                        "type": "integer"
+                                    },
+                                    "thumbnail_url": {
+                                        "description": "Thumbnail blog ",
+                                        "type": "file",
+                                        "format": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blogs/update/{id}": {
+            "post": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Update a new blog",
+                "description": "Returns  blog information",
+                "operationId": "update_blog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the blog to update",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of the new blog",
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "description": "Content of the new blog",
+                                        "type": "string"
+                                    },
+                                    "tag_id": {
+                                        "description": "Tag ID of the new blog",
+                                        "type": "integer"
+                                    },
+                                    "thumbnail_url": {
+                                        "description": "Thumbnail blog ",
+                                        "type": "file",
+                                        "format": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blogs/{blog_id}/delete_tag_blog/{tag_id}": {
+            "post": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Delete tag blog",
+                "description": "Returns  blog information",
+                "operationId": "delete_tag_blog",
+                "parameters": [
+                    {
+                        "name": "blog_id",
+                        "in": "path",
+                        "description": "ID of the blog ",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tag_id",
+                        "in": "path",
+                        "description": "ID of the tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blogs/delete_blog/{blog_id}": {
+            "post": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Delete  blog",
+                "description": "Returns  blog information",
+                "operationId": "delete_blog",
+                "parameters": [
+                    {
+                        "name": "blog_id",
+                        "in": "path",
+                        "description": "ID of the blog ",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/addcart/{id}": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Add to your cart",
+                "description": "",
+                "operationId": "addcart",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of this course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/deletecart/{id}": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Delete course from your cart",
+                "description": "",
+                "operationId": "deletecart",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of this course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/asyn_cart": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Asynchronous cart update",
+                "description": "Update courses in your cart asynchronously by providing an array of course IDs.",
+                "operationId": "asyn_cart",
+                "parameters": [
+                    {
+                        "name": "id[]",
+                        "in": "query",
+                        "description": "Array of course IDs",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/my_cart": {
+            "get": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "my_cart ",
+                "description": "Get my cart ",
+                "operationId": "my_cart",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/category/get_child/{id}": {
             "get": {
                 "tags": [
@@ -94,6 +581,187 @@
                         "description": "Invalid ID supplied"
                     }
                 }
+            }
+        },
+        "/api/course/filter": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Filter courses",
+                "description": "Returns list course",
+                "operationId": "coursefilter",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit per page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of course: free, sale, popular",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/course/detail/{slug}": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Get course detail by slug",
+                "description": "Returns course information",
+                "operationId": "detailvourse",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/course/enroll/{course_id}": {
+            "post": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Enrollcourse free",
+                "description": "",
+                "operationId": "enroll",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "path",
+                        "description": "Course ID ",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/create": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "create a new order",
+                "description": "Create a new order",
+                "operationId": "create_order",
+                "parameters": [
+                    {
+                        "name": "payment_method",
+                        "in": "query",
+                        "description": "Payment method: banking, vnpay",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "voucher_id",
+                        "in": "query",
+                        "description": "Voucher ID to apply to order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/confirmpayment/{order_id}/{order_code}": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "confirmpayment",
+                "description": "confirmpayment",
+                "operationId": "confirmpayment",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/auth/register": {
@@ -242,7 +910,7 @@
                 }
             }
         },
-        "/api/me": {
+        "/api/auth/me": {
             "get": {
                 "tags": [
                     "Users"
@@ -300,6 +968,84 @@
                         "bearer": []
                     }
                 ]
+            }
+        },
+        "/api/user/teachers": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get list teachers information",
+                "description": "Returns list teachers",
+                "operationId": "listteachers",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number ",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/voucher": {
+            "get": {
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "get_list_voucher ",
+                "description": "get_list_voucher",
+                "operationId": "get_list_voucher",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/voucher/check/{code}": {
+            "get": {
+                "tags": [
+                    "Voucher"
+                ],
+                "summary": "check_voucher ",
+                "description": "check_voucher",
+                "operationId": "check_voucher",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "code of this course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
             }
         },
         "/api/common/video/getinfo/{id}": {

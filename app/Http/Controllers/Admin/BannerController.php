@@ -56,7 +56,7 @@ class BannerController extends Controller
 
             Banner::create([
                 'title' => $request->title,
-                'description' => $request->title,
+                'description' => $request->description,
                 'alt' => $request->alt,
                 'from' => 'admin',
                 'user_id' => auth('admin')->user()->id,
@@ -81,13 +81,13 @@ class BannerController extends Controller
                 $banner->banner_url = $image_url;
             }
             $banner->title = $request->title;
-            $banner->description = $request->title;
+            $banner->description = $request->description;
             $banner->alt = $request->alt;
             $banner->placement = $request->placement;
             $banner->link_to = $request->link_to;
             $banner->type = $request->type;
             $banner->priority = $request->priority;
-            $banner->is_blank = $request->is_blank ? true : false;
+            $banner->is_blank = $request->is_blank  ? true : false;
             $banner->is_show = $request->is_show ? true : false;
             $banner->expired_at = $request->expired_at;
             $banner->save();

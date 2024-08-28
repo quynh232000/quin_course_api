@@ -83,13 +83,39 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link " href="/tags">
+                            <div class=" ms-2 me-2 text-primary text-sm opacity-10">
+                                
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Manage Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/blogs">
+                            <div class=" ms-2 me-2 text-warning text-sm opacity-10">
+                                <i class="fa-solid fa-rss"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Manage Blogs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/vouchers">
+                            <div class=" ms-2 me-2 text-success text-sm opacity-10">
+                                <i class="fa-solid fa-ticket"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Manage Vouchers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link " href="/banners">
                             <div class=" ms-2 me-2 text-info text-sm opacity-10">
                                 <i class="fa-solid fa-images"></i>
                             </div>
-                            <span class="nav-link-text ms-1">Banners</span>
+                            <span class="nav-link-text ms-1">Manage Banners</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link " href="/users">
                             <div
@@ -134,16 +160,16 @@
                             </div>
                             <span class="nav-link-text ms-1">Virtual Reality</span>
                         </a>
-                    </li>
+                    </li>--}}
                     <li class="nav-item">
-                        <a class="nav-link " href="./pages/rtl.html">
+                        <a class="nav-link " href="/settings">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-world-2 text-danger text-sm opacity-10"></i>
+                                <i class="fa-solid fa-gear text-danger"></i>
                             </div>
-                            <span class="nav-link-text ms-1">RTL</span>
+                            <span class="nav-link-text ms-1">Settings</span>
                         </a>
-                    </li> --}}
+                    </li> 
                     <li class="nav-item mt-3">
                         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
                     </li>

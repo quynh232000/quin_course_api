@@ -35,6 +35,10 @@ class Course extends Model
         'status',
 
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function progress()
     {
         $data = [
@@ -133,27 +137,57 @@ class Course extends Model
     {
         return $this->hasMany(CourseSection::class, 'course_id');
     }
-    public function first_section(){
+    public function first_section()
+    {
         return $this->sections()->first();
     }
-    public function intends(){
-        return $this->hasMany(CourseIntend::class,'course_id');
+    public function intends()
+    {
+        return $this->hasMany(CourseIntend::class, 'course_id');
+    }
+    public function rating()
+    {
+        $avg = Review::where('course_id', $this->id)->avg('rating');
+        return $avg ? round($avg, 1) : 0;
+    }
+    public function reviews()
+    {
+        $user = null;
+        if (auth('api')->check()) {
+            $user = auth('api')->user();
+        } else if (auth('amin')->check()) {
+            $user = auth('amin')->user();
+        }
+        if ($user) {
+            return Review::where('course_id', $this->id)->where('user_id', '!=', $user->id)->limit(10);
+        } else {
+            return $this->hasMany(Review::class, 'course_id')->limit(10);
+        }
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+    public function related_courses()
+    {
+        return Course::where('category_id', $this->category_id)->where('id', '!=', $this->id)->inRandomOrder()->limit(8);
+    }
+    public function enrollments()
+    {
+        // return $this->hasMany(Enrollment::class, 'course_id');
+    }
+    public function hasEnrollment($user_id)
+    {
+        return Enrollment::where('course_id', $this->id)->where('user_id', $user_id)->exists();
+    }
+    public function duration()
+    {  
+        $total = 0;
+        foreach ($this->sections as $section) {
+            $total += $section->total_duration();
+        }
+        return $total;
     }
 }
 
 
-  //  else {
-        //     $i = 0;
-        //     foreach ($this->sections() as $key => $item) {
-        //         if ($item->step->lecture) {
-        //             $i++;
-        //             if ($i > 4) {
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     if ($i < 4) {
-        //         $data['curriculum'][] = "Create at least 5 lectures ";
-        //         $status = false;
-        //     }
-        // }

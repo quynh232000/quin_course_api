@@ -17,4 +17,8 @@ class Answer extends Model
         'from',
         'is_correct'
     ];
+    protected $hidden = [
+        "created_at",
+        'updated_at'
+    ];
 }

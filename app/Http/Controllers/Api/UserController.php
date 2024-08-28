@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\PasswordResetToken;
 use App\Models\Response;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
@@ -317,40 +321,51 @@ class UserController extends Controller
         }
     }
     /**
-   * @OA\Get(
-  
-   * 
-   *      path="/api/me",
-   *      operationId="getme",
-   *      tags={"Users"},
-   *      summary="Get User Information",
-   *      description="Returns user information",
-   *      @OA\Header(
-   *         header="Authorization",
-   *         description="Api key header",
-   *         required=true,
-   *         @OA\Schema(
-   *             type="string"
-   *         )
-   *     ),
-   *      security={{
-   *         "bearer": {}
-   *     }},
-   *     @OA\Response(
-   *         response=400,
-   *         description="Invalid ID supplied"
-   *     ),
-   * 
-   *     
-   * )
-   */
+     * @OA\Get(
+     *      path="/api/auth/me",
+     *      operationId="getme",
+     *      tags={"Users"},
+     *      summary="Get User Information",
+     *      description="Returns user information",
+     *      @OA\Header(
+     *         header="Authorization",
+     *         description="Api key header",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *      security={{
+     *         "bearer": {}
+     *     }},
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ),
+     * 
+     *     
+     * )
+     */
     public function me()
     {
+        try {
+            $user = auth('api')->user();
+            if ($user == null)
+                return Response::json(false, "Unauthorized");
+            $user->roles = $user->roles();
 
-        $user = auth()->user();
-        if ($user == null)
-            return Response::json(false, "Unauthorized");
-        return Response::json(true, 'Success', auth()->user());
+            $cart_ids = Cart::where('user_id', $user->id)->pluck('course_id');
+            $cart = Course::whereIn('id', $cart_ids)->with(['user'])->get()->map(function ($item) {
+                $item->rating = $item->rating();
+                return $item;
+            });
+            $course_ids = Enrollment::where('user_id', $user->id)->pluck('course_id');
+            $user->cart = $cart;
+            $user->course_ids = $course_ids;
+            return Response::json(true, 'Success', $user);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error: ' . $e->getMessage());
+        }
     }
 
 
@@ -432,5 +447,63 @@ class UserController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60
         ];
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/user/teachers",
+     *      operationId="listteachers",
+     *      tags={"Users"},
+     *      summary="Get list teachers information",
+     *      description="Returns list teachers",
+     *      @OA\Parameter(
+     *         description="Page number ",
+     *         in="query",
+     *         name="page",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         description="Limit per page",
+     *         in="query",
+     *         name="limit",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ),
+     * 
+     *     
+     * )
+     */
+    public function get_teacher_list(Request $request)
+    {
+        try {
+            $page = $request->page ?? 1;
+            $limit = $request->limit ?? 10;
+            $role = Role::where('name', 'Teacher')->first();
+            if (!$role) {
+                return Response::json(false, "Teacher role does not exist");
+            }
+            $user_ids = UserRole::where('role_id', $role->id)->pluck('user_id')->all();
+            $teachers = User::whereIn('id', $user_ids)->paginate($limit, ['*'], 'page', $page);
+
+            $teachers->getCollection()->transform(function ($item) {
+                $item->roles = $item->roles();
+                return $item;
+            });
+
+            return Response::json(true, 'Get teacher list successfully!', $teachers->items(), Response::pagination($teachers));
+        } catch (Exception $e) {
+            return Response::json(false, "Error from server: " . $e->getMessage());
+        }
     }
 }

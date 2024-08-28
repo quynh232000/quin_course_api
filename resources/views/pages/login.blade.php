@@ -108,11 +108,12 @@
                                         @csrf
                                         <div class="mb-3">
                                             <input type="email" name="email" class="form-control form-control-lg"
-                                                placeholder="Email" value="{{old('email')}}" aria-label="Email">
+                                                placeholder="Email" value="{{ old('email') }}" aria-label="Email">
                                         </div>
                                         <div class="mb-3">
                                             <input type="password" class="form-control form-control-lg"
-                                                placeholder="Password" value="{{old('password')}}" name="password" aria-label="Password">
+                                                placeholder="Password" value="{{ old('password') }}" name="password"
+                                                aria-label="Password">
                                         </div>
                                         @if (session('error'))
                                             <div class="w-100 ">
@@ -130,11 +131,26 @@
                                                 class="btn btn-lg btn-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
                                         </div>
                                     </form>
-                                </div>
-                                <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                                    <p class="mb-4 text-sm mx-auto">
-                                        Login to manage Admin Quin Course
-                                    </p>
+                                    <div class="card-footer text-center pt-0 px-lg-2 px-1 mt-3">
+                                        
+                                        <div class="my-5 border-bottom position-relative">
+                                            <div class="d-flex justify-content-center position-absolute end-0 start-0" style="bottom:-12px"><span class="px-3" style="font-size: 14px; background-color:#f8f9fa">Or</span></div>
+                                        </div>
+                                        <div class="w-100">
+                                            <a class="btn btn-primary btn-lg btn-block w-100 d-flex gap-2 align-items-center justify-content-center"
+                                                style="background-color: #DB4437" href="/auth/google/redirect"
+                                                role="button">
+                                                <i class="fa-brands fa-google"></i>Continue with Goolge
+                                            </a>
+                                            <a class="btn btn-primary btn-lg btn-block w-100 d-flex gap-2 align-items-center bg-dark justify-content-center"
+                                                style="background-color: #55acee" href="/auth/github/redirect"
+                                                role="button">
+                                                <i class="fa-brands fa-github"></i>Continue with Github</a>
+                                        </div>
+                                        <p class="mb-4 text-sm mx-auto">
+                                            Login to manage Admin Quin Course
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +160,8 @@
                                 style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
               background-size: cover;">
                                 <span class="mask bg-gradient-primary opacity-6"></span>
-                                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Learning for your job"
+                                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Learning for your
+                                    job"
                                 </h4>
                                 <p class="text-white position-relative">Become a teacher to share knowledge, become a
                                     student to learn useful knowledge</p>
