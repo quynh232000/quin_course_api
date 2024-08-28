@@ -8,11 +8,14 @@ use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Str;
+use App\Services\TransactionService;
 
 class AuthController extends Controller
 {
     public function login()
     {
+        $trans = new TransactionService();
+        $trans->fetchTransactionHistory();
         if(auth('admin')->check()){
             return redirect('/');
         }

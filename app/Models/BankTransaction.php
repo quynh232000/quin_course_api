@@ -12,7 +12,7 @@ class BankTransaction extends Model
     protected $fillable = [
         'bank_id',
         'bank_brand_name',
-        'acount_number',
+        'account_number',
         'transaction_date',
         'amount_out',
         'amount_in',

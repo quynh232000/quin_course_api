@@ -42,6 +42,7 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -125,7 +126,8 @@ return [
     ],
 
     // 'providers' => [
-    //     Laravel\Socialite\SocialiteServiceProvider::class,
+    //     // Laravel\Socialite\SocialiteServiceProvider::class,
+    //     // App\Providers\TransactionHistoryProvider::class,
     // ],
     'aliases' => Facade::defaultAliases()->merge([
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
