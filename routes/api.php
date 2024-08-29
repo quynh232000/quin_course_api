@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-
+Route::get('/docs/api-docs.json', function () {
+    return response()->json(\Swagger\scan(app_path()));
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -83,8 +85,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::prefix('order')->group(function () {
         Route::post('/create', [OrderController::class, 'create_order']);
         Route::post('/confirmpayment/{order_id}/{order_code}', [OrderController::class, 'confirmpayment']);
-       
-        // Route::get('/my_order', [OrderController::class,'my_order']);
+        Route::post('checkpayment/{order_id}/{order_code}', [OrderController::class, 'checkpayment']);
     });
 });
 

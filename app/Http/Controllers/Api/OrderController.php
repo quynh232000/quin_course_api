@@ -119,10 +119,10 @@ class OrderController extends Controller
     /**
      * @OA\Post(
      *      path="/api/order/confirmpayment/{order_id}/{order_code}",
-     *      operationId="confirmpayment",
+     *      operationId="confirmpayment1",
      *      tags={"Order"},
-     *      summary="confirmpayment",
-     *      description="confirmpayment",
+     *      summary="Check your status or change",
+     *      description="Check your status or change",
      *      @OA\Parameter(
      *          name="order_id",
      *          in="path",
@@ -164,8 +164,8 @@ class OrderController extends Controller
 
             // send mail to admin 
             $emailAdmin = Setting::where(['type' => 'ADMIN', 'key' => 'MAIL'])->pluck('value')->first();
-           
-            $data['APP_URL']='http://localhost:8000';
+
+            $data['APP_URL'] = 'http://localhost:8000';
             $data['email'] = $emailAdmin;
             $data['title'] = "Confirm payment for new order";
             $data['order'] = $order;
@@ -186,5 +186,26 @@ class OrderController extends Controller
             return Response::json(false, 'Error: ' . $e->getMessage());
         }
     }
-    
+
+  
+    public function checkpayment($order_id, $order_code)
+    {
+        try {
+
+            if (!$order_id || !$order_code) {
+                return Response::json(false, 'Missing Order ID or Order Code');
+            }
+            $order = Order::find($order_id);
+            if (!$order || $order->order_code != $order_code) {
+                return Response::json(false, 'Order not found');
+            }
+            if ($order->status == 'pending') {
+                return Response::json(true, 'Order is pending', $order->status);
+            }
+            return Response::json(false, 'Order is paid', $order->status);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error: ' . $e->getMessage());
+        }
+    }
+
 }

@@ -17,7 +17,6 @@ class FetchTransactionHistory extends Command
     }
     public function handle()
     {
-       
         try {
             $transactionService = new TransactionService();
             $transactionService->fetchTransactionHistory();

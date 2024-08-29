@@ -13,6 +13,8 @@ return [
                  * Route for accessing api documentation interface
                  */
                 'api' => 'api/documentation',
+                // 'docs' => 'api/docs',
+                // 'api' => 'api/docs.json',
             ],
             'paths' => [
                 /*
@@ -66,8 +68,8 @@ return [
                 'docs' => [],
                 'oauth2_callback' => [],
             ],
-            // 'api' => '/api/documentation',
-            'api' => 'https://4d94-2405-4802-90f3-70b0-8c75-158d-aeb6-9cb3.ngrok-free.app/api/documentation',
+            'api' => '/api/documentation',
+            // 'api' => 'https://4d94-2405-4802-90f3-70b0-8c75-158d-aeb6-9cb3.ngrok-free.app/api/documentation',
             /*
              * Route Group options
              */
@@ -100,7 +102,10 @@ return [
              * @deprecated Please use `scanOptions.exclude`
              * `scanOptions.exclude` overwrites this
              */
-            'excludes' => [],
+            'excludes' => [
+                base_path('app/Console/Kernel.php'),
+                base_path('app/Http/Kernel.php'),
+            ],
             // 'docs' => public_path('api/documentation'), // Directory where Swagger JSON/YAML files are generated
             'docs_json' => 'api/documentation.json', // Generated Swagger JSON file path
             'docs_yaml' => 'api/documentation.yaml',

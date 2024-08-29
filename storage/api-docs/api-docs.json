@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Quin Travel",
+        "title": "API Quin Course",
         "version": "1.0.0"
     },
     "paths": {
@@ -731,9 +731,9 @@
                 "tags": [
                     "Order"
                 ],
-                "summary": "confirmpayment",
-                "description": "confirmpayment",
-                "operationId": "confirmpayment",
+                "summary": "Check your status or change",
+                "description": "Check your status or change",
+                "operationId": "confirmpayment1",
                 "parameters": [
                     {
                         "name": "order_id",
@@ -1075,6 +1075,48 @@
             }
         }
     },
+    "tags": [
+        {
+            "name": "Banner",
+            "description": "Banner"
+        },
+        {
+            "name": "Blog",
+            "description": "Blog"
+        },
+        {
+            "name": "Cart",
+            "description": "Cart"
+        },
+        {
+            "name": "Category",
+            "description": "Category"
+        },
+        {
+            "name": "Commons",
+            "description": "Commons"
+        },
+        {
+            "name": "Course",
+            "description": "Course"
+        },
+        {
+            "name": "Order",
+            "description": "Order"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        },
+        {
+            "name": "Voucher",
+            "description": "Voucher"
+        },
+        {
+            "name": "Common",
+            "description": "Common"
+        }
+    ],
     "components": {
         "securitySchemes": {
             "bearer": {

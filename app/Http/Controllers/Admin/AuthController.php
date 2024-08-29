@@ -55,7 +55,7 @@ class AuthController extends Controller
     }
     public function callback($provider)
     {
-        $data = Socialite::driver($provider)->user();
+        $data = Socialite::driver($provider)->stateless()->user();
         $email = $data->user['email'];
         $checkUser = User::where('email', $email)->first();
         if ($checkUser) {
