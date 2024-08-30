@@ -152,6 +152,12 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
         Route::get("/delete/{id}", [AdminController::class, 'settings_delete']);
         ;
     });
+    Route::prefix('orders')->group(function () { 
+        Route::get('/',[OrderController::class,'manage_orders'])->name('admin.orders');
+        Route::get('/{order_code}',[OrderController::class,'order_detail'])->name('admin.order.order_detail');
+        Route::get('/cancel/{order_id}',[OrderController::class,'cancel_order'])->name('admin.order.cancel');
+        Route::get('/confirm/{order_id}',[OrderController::class,'confirm_order'])->name('admin.order.confirm');
+    });
     Route::get('/notfund', function () {
         return view('pages.notfund');
     })->name('admin.notfund');
@@ -161,11 +167,11 @@ Route::prefix("/auth")->group(function () {
     Route::post("/login", [AuthController::class, '_login']);
 
     Route::get('{provider}/redirect', [AuthController::class, 'redirect']);
-     
+
     Route::get('{provider}/callback', [AuthController::class, 'callback']);
 });
 
-Route::get('/order/confirm/{order_id}',[OrderController::class, 'admin_confirm_order']);
+Route::get('/order/confirm/{order_id}', [OrderController::class, 'admin_confirm_order']);
 
 
 

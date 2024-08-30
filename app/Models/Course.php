@@ -137,6 +137,19 @@ class Course extends Model
     {
         return $this->hasMany(CourseSection::class, 'course_id');
     }
+    public function check_has_section($section_id)
+    {
+        return CourseSection::where(['course_id' => $this->id, 'id' => $section_id])->exists();
+    }
+    public function check_has_step($step_uuid)
+    {
+        $step = CourseStep::where('uuid', $step_uuid)->first();
+        return $this->check_has_section($step->section_id);
+        if ($step) {
+        } else {
+            return false;
+        }
+    }
     public function first_section()
     {
         return $this->sections()->first();
@@ -181,7 +194,7 @@ class Course extends Model
         return Enrollment::where('course_id', $this->id)->where('user_id', $user_id)->exists();
     }
     public function duration()
-    {  
+    {
         $total = 0;
         foreach ($this->sections as $section) {
             $total += $section->total_duration();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankTransaction;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -186,8 +187,39 @@ class OrderController extends Controller
             return Response::json(false, 'Error: ' . $e->getMessage());
         }
     }
+    /**
+     * @OA\Post(
+     *      path="/api/order/checkpayment/{order_id}/{order_code}",
+     *      operationId="checkpayment",
+     *      tags={"Order"},
+     *      summary="checkpayment",
+     *      description="checkpayment",
+     *      @OA\Parameter(
+     *          name="order_id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *       @OA\Parameter(
+     *          name="order_code",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *      security={{
+     *          "bearer": {}
+     *      }},
+     *      @OA\Response(
+     *          response=400,
+     *          description="Invalid ID supplied"
+     *      ),
+     * )
+     */
 
-  
     public function checkpayment($order_id, $order_code)
     {
         try {
@@ -208,4 +240,60 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *      path="/api/order/my_order",
+     *      operationId="myorder",
+     *      tags={"Order"},
+     *      summary="myorder",
+     *      description="myorder",
+     *      security={{
+     *          "bearer": {}
+     *      }},
+     *      @OA\Response(
+     *          response=400,
+     *          description="Invalid ID supplied"
+     *      ),
+     * )
+     */
+    public function my_order()
+    {
+        try {
+            $data = Order::where('user_id', auth('api')->id())->with('orderDetails.course')->limit(20)->get();
+            return Response::json(true, 'Get my order successfully', $data);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error: ' . $e->getMessage());
+        }
+    }
+    public function real_check_payment($order_code)
+    {
+
+        try {
+            if (!$order_code) {
+                return Response::json(false, 'Missing Order Code ');
+            }
+            // check order is exist
+            $order = Order::where('order_code', $order_code)->first();
+            if (!$order) {
+                return Response::json(false, 'Order not found');
+            }
+            if ($order->status != 'new') {
+                return Response::json(false, 'Transaction for this order had already been completed');
+            }
+            // check bank transaction history
+            $check_code = BankTransaction::where('transaction_content', 'like', '%' . $order_code . '%')->first();
+            if (!$check_code) {
+                return Response::json(false, 'No transaction for order code: ' . $order_code);
+            }
+            // check amount
+            if ($check_code->amount_in != $order->total) {
+                return Response::json(false, 'Amount not match with transaction: ' . $order_code);
+            }
+            // success
+
+            return Response::json(true, 'success', $order->status);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error: ' . $e->getMessage());
+        }
+    }
 }

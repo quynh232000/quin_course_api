@@ -48,6 +48,9 @@ class CartController extends Controller
             if (!$course) {
                 return Response::json(false, 'Course not found');
             }
+            if($course->price ==0){
+                return Response::json(false, 'Course is free. You can not add this course to cart. Enroll this.');
+            }
             $checkCart = Cart::where(['course_id' => $id, 'user_id' => auth('api')->id()])->first();
             if (!$checkCart) {
                 Cart::create([

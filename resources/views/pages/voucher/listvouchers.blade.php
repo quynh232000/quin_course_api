@@ -127,7 +127,7 @@
                                                 <div class="d-flex justify-content-center">
                                                     <p class="text-sm font-weight-bold mb-0">
 
-                                                        {{ number_format($item->discount_amount, 0, ',', '.') }} vnd
+                                                        {{$item->discount_amount }} 
                                                     </p>
                                                 </div>
                                             </td>

@@ -5,8 +5,10 @@ use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\Blogcontroller;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\Commoncontroller;
 use App\Http\Controllers\Api\Coursecontroller;
+use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VoucherController;
@@ -64,9 +66,7 @@ Route::prefix('/tags')->group(function () {
 Route::prefix('/course')->group(function () {
     Route::get('/filter', [Coursecontroller::class, 'filter_course']);
     Route::get('/detail/{slug}', [Coursecontroller::class, 'detail_course']);
-    Route::middleware([JwtMiddleware::class])->group(function () {
-        Route::post('/enroll/{course_id}', [Coursecontroller::class, 'enroll_course']);
-    });
+
 });
 Route::prefix('/user')->group(function () {
     Route::get('/teachers', [UserController::class, 'get_teacher_list']);
@@ -86,8 +86,31 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::post('/create', [OrderController::class, 'create_order']);
         Route::post('/confirmpayment/{order_id}/{order_code}', [OrderController::class, 'confirmpayment']);
         Route::post('checkpayment/{order_id}/{order_code}', [OrderController::class, 'checkpayment']);
+        Route::get('my_order', [OrderController::class, 'my_order']);
+        Route::get('my_order', [OrderController::class, 'my_order']);
     });
-});
+    Route::prefix('course')->group(function () {
+        Route::post('/enroll/{course_id}', [Coursecontroller::class, 'enroll_course']);
+        Route::get('/learning/{course_slug}', [CourseController::class, 'get_course_info']);
+        Route::post('user_progress/{course_slug}/{step_uuid}', [CourseController::class, 'user_progress']);
+        Route::get('step/{course_slug}/{step_uuid}', [CourseController::class, 'step_info']);
+        Route::get('test/{uuid}', [CourseController::class, 'test']);
+       
+    });
+    Route::prefix('notes')->group(function () {
+        Route::post('create', [NoteController::class, 'create_note']);
+        Route::get('my_notes/{step_id}', [NoteController::class, 'get_my_notes']);
+        Route::post('update/{note_id}', [NoteController::class, 'update_note']);
+        Route::post('delete/{note_id}', [NoteController::class, 'delete_note']);
+        // Route::get('my_notes_by_course/{course_id}', [CourseController::class, 'get_my_notes_by_course']); 
+    });
+    Route::prefix('comments')->group(function () {
+        Route::post('create',[CommentController::class,'create_comment']);
+    });
 
+});
+Route::get('real_check_payment/{order_code}', [OrderController::class, 'real_check_payment']);
+
+Route::get('test/{uuid}', [CourseController::class, 'test']);
 
 

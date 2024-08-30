@@ -85,7 +85,7 @@
                     <li class="nav-item">
                         <a class="nav-link " href="/tags">
                             <div class=" ms-2 me-2 text-primary text-sm opacity-10">
-                                
+
                                 <i class="fa-solid fa-code"></i>
                             </div>
                             <span class="nav-link-text ms-1">Manage Tags</span>
@@ -115,7 +115,15 @@
                             <span class="nav-link-text ms-1">Manage Banners</span>
                         </a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link " href="{{ route('admin.orders') }}">
+                            <div
+                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+                            </div>
+                            <span class="nav-link-text ms-1">Manage Orders</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link " href="/users">
                             <div
@@ -160,7 +168,7 @@
                             </div>
                             <span class="nav-link-text ms-1">Virtual Reality</span>
                         </a>
-                    </li>--}}
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link " href="/settings">
                             <div
@@ -169,7 +177,7 @@
                             </div>
                             <span class="nav-link-text ms-1">Settings</span>
                         </a>
-                    </li> 
+                    </li>
                     <li class="nav-item mt-3">
                         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
                     </li>
@@ -223,7 +231,7 @@
     @endif
 
 
-    <main class="main-content position-relative border-radius-lg  h-100 flex-1 d-flex flex-column" >
+    <main class="main-content position-relative border-radius-lg  h-100 flex-1 d-flex flex-column">
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur"
             data-scroll="false">
@@ -368,9 +376,9 @@
         {{-- <div class="container-fluid py-4 d-flex flex-column justify-content-between  flex-1"> --}}
         <div class=" d-flex flex-column justify-content-between  flex-1 ">
             {{-- main --}}
-            <div class="flex-1 d-flex" >
+            <div class="flex-1 d-flex">
                 @yield('main')
-                
+
             </div>
             {{-- main --}}
             <footer class="footer pt-3  ">
@@ -610,6 +618,42 @@
 
     {{-- <script src="{{ asset('assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script> --}}
     <script src="{{ asset('assets/js/argon-dashboard.js?v=2.0.4') }}"></script>
+    <script>
+        // function hex2bin(hex) {
+        //     let binary = '';
+        //     for (let i = 0; i < hex.length; i += 2) {
+        //         binary += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        //     }
+        //     return binary;
+        // }
+
+        // function hexToUuid(hexUuid) {
+        //     // Add dashes to the appropriate positions in the hexadecimal string
+        //     return hexUuid.replace(
+        //         /^(.{8})(.{4})(.{4})(.{4})(.{12})$/,
+        //         '$1-$2-$3-$4-$5'
+        //     );
+        // }
+        // const binaryString = hexToUuid('5e52d6b435c9462395cc4e8fb4132d29');
+        // console.log(binaryString);
+        function decodeCustomId(customId) {
+            // Step 1: Replace characters back to original Base64 format
+            let base64 = customId.replace(/-/g, '+').replace(/_/g, '/');
+
+            // Step 2: Add padding to the base64 string if necessary
+            while (base64.length % 4 !== 0) {
+                base64 += '=';
+            }
+
+            // Step 3: Decode base64 to a string
+            const decodedStr = atob(base64);
+
+            return decodedStr;
+        }
+        const uuid =decodeCustomId('NWU1MmQ2YjQtMzVjOS00NjIzLTk1Y2MtNGU4ZmI0MTMyZDI5')
+        console.log(uuid+"");
+        
+    </script>
     @yield('js')
 </body>
 

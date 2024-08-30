@@ -686,6 +686,314 @@
                 ]
             }
         },
+        "/api/course/learning/{course_slug}": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Get course information by slug",
+                "description": "Returns course information",
+                "operationId": "coursedetailbyslug",
+                "parameters": [
+                    {
+                        "name": "course_slug",
+                        "in": "path",
+                        "description": "Slug of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/course/user_progress/{course_slug}/{step_uuid}": {
+            "post": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "user_progress",
+                "description": "user_progress",
+                "operationId": "user_progress",
+                "parameters": [
+                    {
+                        "name": "course_slug",
+                        "in": "path",
+                        "description": "Slug of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "step_uuid",
+                        "in": "path",
+                        "description": "Step uuid of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/course/step/{course_slug}/{step_uuid}": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "step_info",
+                "description": "step_info",
+                "operationId": "step_info",
+                "parameters": [
+                    {
+                        "name": "course_slug",
+                        "in": "path",
+                        "description": "Slug of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "step_uuid",
+                        "in": "path",
+                        "description": "Step uuid of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/test/{uuid}": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Get course detail by slug",
+                "description": "Returns course information",
+                "operationId": "test",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Slug of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/notes/create": {
+            "post": {
+                "tags": [
+                    "Note"
+                ],
+                "summary": "Create a new create_note",
+                "description": "Returns new new create_note information",
+                "operationId": "create_note",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "note": {
+                                        "description": "Your note",
+                                        "type": "string"
+                                    },
+                                    "time": {
+                                        "description": "Note in time video: 1:20",
+                                        "type": "string"
+                                    },
+                                    "step_id": {
+                                        "description": "Step ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/notes/my_notes/{step_id}": {
+            "get": {
+                "tags": [
+                    "Note"
+                ],
+                "summary": "Filter my_notes",
+                "description": "Returns list my_notes",
+                "operationId": "my_notes",
+                "parameters": [
+                    {
+                        "name": "step_id",
+                        "in": "path",
+                        "description": "ID current step",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type: course or section",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort: latest | oldest",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/notes/delete/{note_id}": {
+            "post": {
+                "tags": [
+                    "Note"
+                ],
+                "summary": "delete_note ",
+                "description": "delete_note",
+                "operationId": "delete_note",
+                "parameters": [
+                    {
+                        "name": "note_id",
+                        "in": "path",
+                        "description": "note_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/notes/update/{note_id}": {
+            "post": {
+                "tags": [
+                    "Note"
+                ],
+                "summary": "update_note",
+                "description": "update_note",
+                "operationId": "update_note",
+                "parameters": [
+                    {
+                        "name": "note_id",
+                        "in": "path",
+                        "description": "note_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "note": {
+                                        "description": "Your note",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/order/create": {
             "post": {
                 "tags": [
@@ -752,6 +1060,64 @@
                         }
                     }
                 ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/checkpayment/{order_id}/{order_code}": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "checkpayment",
+                "description": "checkpayment",
+                "operationId": "checkpayment",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/my_order": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "myorder",
+                "description": "myorder",
+                "operationId": "myorder",
                 "responses": {
                     "400": {
                         "description": "Invalid ID supplied"
@@ -1099,6 +1465,10 @@
         {
             "name": "Course",
             "description": "Course"
+        },
+        {
+            "name": "Note",
+            "description": "Note"
         },
         {
             "name": "Order",
