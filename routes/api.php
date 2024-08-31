@@ -106,9 +106,13 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     });
     Route::prefix('comments')->group(function () {
         Route::post('create',[CommentController::class,'create_comment']);
+        Route::post('delete/{id}',[CommentController::class,'delete_comment']);
+        Route::post('update/{id}',[CommentController::class,'update_comment']);
     });
+    Route::post('reaction/{id}',[CommentController::class,'reaction_comment']);
 
 });
+Route::get('comments/list/{commentable_id}',[CommentController::class,'get_list_comments']);
 Route::get('real_check_payment/{order_code}', [OrderController::class, 'real_check_payment']);
 
 Route::get('test/{uuid}', [CourseController::class, 'test']);

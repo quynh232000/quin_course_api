@@ -12,6 +12,7 @@ class Reaction extends Model
     protected $fillable = [
         'user_id',
         'commentable_id',
+        'commentable_type',
         'type'
     ];
     protected $hidden = [

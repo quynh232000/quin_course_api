@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('commentable_id');
+            $table->string('commentable_type');
             $table->string('type');
             $table->timestamps();
         });

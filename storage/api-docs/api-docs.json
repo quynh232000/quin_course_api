@@ -568,6 +568,234 @@
                 }
             }
         },
+        "/api/comments/create": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Create a new create_comment",
+                "description": "Returns new new create_comment information",
+                "operationId": "create_comment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "comment": {
+                                        "description": "Your comment",
+                                        "type": "string"
+                                    },
+                                    "commentable_id": {
+                                        "description": "ID",
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "description": "Type commentable: step,blog,comment",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/list/{commentable_id}": {
+            "get": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Filter listcomments",
+                "description": "Returns  listcomments",
+                "operationId": "listcomments",
+                "parameters": [
+                    {
+                        "name": "commentable_id",
+                        "in": "path",
+                        "description": "Commentable_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of comment: step, blog, comment",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit per page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/reaction/{id}": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "changereaction",
+                "description": "changereaction",
+                "operationId": "changereaction",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID : ID Comment, ID blog",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "like,love,crush,haha,wow,sad,angry",
+                                        "type": "string"
+                                    },
+                                    "commentable_type": {
+                                        "description": "comment, blog",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/delete/{id}": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "deleteComment",
+                "description": "deleteComment",
+                "operationId": "deleteComment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID : ID Comment",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/update/{id}": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Create a new update_comment",
+                "description": "Returns new new update_comment information",
+                "operationId": "update_comment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID : ID Comment",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "comment": {
+                                        "description": "Your comment",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/common/banks": {
             "get": {
                 "tags": [
@@ -1457,6 +1685,10 @@
         {
             "name": "Category",
             "description": "Category"
+        },
+        {
+            "name": "Comment",
+            "description": "Comment"
         },
         {
             "name": "Commons",
