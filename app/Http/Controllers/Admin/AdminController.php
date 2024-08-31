@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\Order;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +14,10 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view("pages.dashboad");
+        $data['user_count'] = User::count();
+        $data['course_count'] = Course::count();
+        $data['money_total'] = Order::where('status','completed')->sum('total');
+        return view("pages.dashboad",compact('data'));
     }
 
 
