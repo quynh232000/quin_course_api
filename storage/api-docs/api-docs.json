@@ -57,6 +57,15 @@
                         "schema": {
                             "type": "number"
                         }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
                     }
                 ],
                 "responses": {
@@ -811,6 +820,21 @@
                 }
             }
         },
+        "/api/common/levels": {
+            "get": {
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "Get All levels course Information",
+                "description": "Returns levels information",
+                "operationId": "get_levels",
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
         "/api/course/filter": {
             "get": {
                 "tags": [
@@ -844,6 +868,233 @@
                         "name": "type",
                         "in": "query",
                         "description": "Type of course: free, sale, popular",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "slug_cate",
+                        "in": "query",
+                        "description": "Slug category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/course/collection": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Filter courses",
+                "description": "Returns list course",
+                "operationId": "coursefiltercollection",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit per page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of course: free, sale, popular",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Type of course: latest, popularity",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "slug_cate",
+                        "in": "query",
+                        "description": "Slug category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "Level ID",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "duration",
+                        "in": "query",
+                        "description": "Duration type: extraShort,short,medium,long,extraLong",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "star",
+                        "in": "query",
+                        "description": "Star: 3, 3.5, 4, 4.5",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "teacher_id",
+                        "in": "query",
+                        "description": "List course by same teacher id",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "user_enrollment",
+                        "in": "query",
+                        "description": "List course by user_name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/course/course_join_username": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Filter courses",
+                "description": "Returns list course",
+                "operationId": "course_join_username",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit per page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of course: free, sale, popular",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Type of course: latest, popularity",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "slug_cate",
+                        "in": "query",
+                        "description": "Slug category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "Level ID",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "duration",
+                        "in": "query",
+                        "description": "Duration type: extraShort,short,medium,long,extraLong",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "star",
+                        "in": "query",
+                        "description": "Star: 3, 3.5, 4, 4.5",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "teacher_id",
+                        "in": "query",
+                        "description": "List course by same teacher id",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "List course by user_name",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -945,7 +1196,7 @@
                 ]
             }
         },
-        "/api/course/user_progress/{course_slug}/{step_uuid}": {
+        "/api/course/user_progress/{course_id}/{step_uuid}": {
             "post": {
                 "tags": [
                     "Course"
@@ -955,9 +1206,9 @@
                 "operationId": "user_progress",
                 "parameters": [
                     {
-                        "name": "course_slug",
+                        "name": "course_id",
                         "in": "path",
-                        "description": "Slug of thif course",
+                        "description": "course_id of thif course",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -985,7 +1236,7 @@
                 ]
             }
         },
-        "/api/course/step/{course_slug}/{step_uuid}": {
+        "/api/course/step/{course_id}/{step_uuid}": {
             "get": {
                 "tags": [
                     "Course"
@@ -995,9 +1246,9 @@
                 "operationId": "step_info",
                 "parameters": [
                     {
-                        "name": "course_slug",
+                        "name": "course_id",
                         "in": "path",
-                        "description": "Slug of thif course",
+                        "description": "course_id of this course",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1007,6 +1258,37 @@
                         "name": "step_uuid",
                         "in": "path",
                         "description": "Step uuid of thif course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/course/user_quiz/{id}": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "user_quiz",
+                "description": "user_quiz",
+                "operationId": "user_quiz",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of this answer",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1338,6 +1620,36 @@
                 ]
             }
         },
+        "/api/order/{order_code}/check_amount": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "check_amount",
+                "description": "check_amount",
+                "operationId": "check_amount",
+                "parameters": [
+                    {
+                        "name": "order_code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/order/my_order": {
             "get": {
                 "tags": [
@@ -1349,6 +1661,50 @@
                 "responses": {
                     "400": {
                         "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews/create": {
+            "post": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Create a new review",
+                "description": "Returns new new review information",
+                "operationId": "create review",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "course_id": {
+                                        "description": "",
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "description": "Content",
+                                        "type": "string"
+                                    },
+                                    "rating": {
+                                        "description": "rating",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
                     }
                 },
                 "security": [
@@ -1372,10 +1728,15 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "full_name": {
-                                        "description": "Your full name",
+                                    "first_name": {
+                                        "description": "Your first name",
                                         "type": "string",
-                                        "example": "Nguyen van a"
+                                        "example": "Nguyen van "
+                                    },
+                                    "last_name": {
+                                        "description": "Your last name",
+                                        "type": "string",
+                                        "example": "An "
                                     },
                                     "email": {
                                         "description": "Your email address",
@@ -1601,6 +1962,58 @@
                 }
             }
         },
+        "/api/user/teacher_info/{username}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get  teacher information",
+                "description": "Returns  teachers",
+                "operationId": "teacher_info",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username of teacher",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/user/user_info/{username}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get  user_info information",
+                "description": "Returns  user_info",
+                "operationId": "user_info",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username of user_info",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
         "/api/voucher": {
             "get": {
                 "tags": [
@@ -1705,6 +2118,10 @@
         {
             "name": "Order",
             "description": "Order"
+        },
+        {
+            "name": "Review",
+            "description": "Review"
         },
         {
             "name": "Users",

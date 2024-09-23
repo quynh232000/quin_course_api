@@ -15,4 +15,8 @@ class LevelCourse extends Model
         'description',
         'slug'
     ];
+    protected $hidden=[
+        'created_at',
+        'updated_at'
+    ];
 }

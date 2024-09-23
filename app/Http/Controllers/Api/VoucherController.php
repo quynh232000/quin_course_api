@@ -25,11 +25,15 @@ class VoucherController extends Controller
      *      ),
      * )
      */
-    public function get_list()
+    public function get_list(Request $request)
     {
         try {
-            $data = Voucher::where('date_start', '<=', Carbon::now())->where('date_end', '>', Carbon::now())->where('used', '<', 'quantity')->get();
-            // $data = Voucher::active()->get();
+            $limit = $request->limit?? 10;
+            $data = Voucher::where('date_start', '<=', Carbon::now())
+            ->where('date_end', '>', Carbon::now())->limit($limit)
+            ->get();
+            // return Carbon::now();
+            // $data = Voucher::all();
             return Response::json(true, 'Get list voucher successfully!', $data);
         } catch (Exception $e) {
             return Response::json(false, 'Error:' . $e->getMessage());

@@ -5,16 +5,21 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BankTransaction;
 use App\Models\Cart;
+use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Response;
 use App\Models\Setting;
+use App\Models\Transaction;
 use App\Models\Voucher;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Str;
 use Hash;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -160,13 +165,13 @@ class OrderController extends Controller
                 return Response::json(false, 'Order not found');
             }
             if ($order->status != 'new') {
-                return Response::json(false, 'Order is already paid');
+                return Response::json(false, 'Order is already paid', $order);
             }
 
             // send mail to admin 
             $emailAdmin = Setting::where(['type' => 'ADMIN', 'key' => 'MAIL'])->pluck('value')->first();
 
-            $data['APP_URL'] = 'http://localhost:8000';
+            $data['APP_URL'] = env('APP_URL', 'http://localhost:8000');
             $data['email'] = $emailAdmin;
             $data['title'] = "Confirm payment for new order";
             $data['order'] = $order;
@@ -182,7 +187,7 @@ class OrderController extends Controller
             $order->save();
             // remove cart user 
             Cart::where('user_id', auth('api')->id())->delete();
-            return Response::json(true, 'Confirm payment successfully');
+            return Response::json(true, 'Confirm payment successfully', $order);
         } catch (Exception $e) {
             return Response::json(false, 'Error: ' . $e->getMessage());
         }
@@ -235,6 +240,135 @@ class OrderController extends Controller
                 return Response::json(true, 'Order is pending', $order->status);
             }
             return Response::json(false, 'Order is paid', $order->status);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error: ' . $e->getMessage());
+        }
+    }
+
+
+
+    /**
+   * @OA\Post(
+   *      path="/api/order/{order_code}/check_amount",
+   *      operationId="check_amount",
+   *      tags={"Order"},
+   *      summary="check_amount",
+   *      description="check_amount",
+
+   *       @OA\Parameter(
+   *          name="order_code",
+   *          in="path",
+   *          required=true,
+   *          @OA\Schema(
+   *              type="string",
+   *          )
+   *      ),
+   *      security={{
+   *          "bearer": {}
+   *      }},
+   *      @OA\Response(
+   *          response=400,
+   *          description="Invalid ID supplied"
+   *      ),
+   * )
+   */
+
+    public function check_amount($order_code)
+    {
+        set_time_limit(120);
+        try {
+
+            if (!$order_code) {
+                return Response::json(false, 'Missing  Order Code');
+            }
+            $order = Order::where('order_code', $order_code)->first();
+            if (!$order) {
+                return Response::json(false, 'Order not found');
+            }
+            if($order->status !='new'){
+                return Response::json(false, 'Order is completed', $order);
+            }
+            $attempts = 0;
+            $flag = true;
+            $responseJson = Response::json(false, 'Order not pay now', ['is_changed' => false, 'order' => $order, 'transaction' => null]);
+
+            while ($flag && $attempts < 1) {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . env('API_SEPAY_KEY', 'EMYGNDWWJOSONPF7587UBMVXENPBBGXTVUUACY092VZJOFEYFYPKZK8PD26HW45A'),
+                    'Accept' => 'application/json',
+                ])->get('https://my.sepay.vn/userapi/transactions/list');
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $transactions = $data['transactions'];
+                    foreach ($transactions as $key => $item) {
+                        if (Str::contains(Str::lower($item['transaction_content']), Str::lower($order->order_code))) {
+
+                            $transaction = BankTransaction::create([
+                                'bank_id' => $item['id'],
+                                'bank_brand_name' => $item['bank_brand_name'],
+                                'account_number' => $item['account_number'],
+                                'transaction_date' => $item['transaction_date'],
+                                'amount_out' => $item['amount_out'],
+                                'amount_in' => $item['amount_in'],
+                                'accumulated' => $item['accumulated'],
+                                'transaction_content' => $item['transaction_content'],
+                                'reference_number' => $item['reference_number']
+                            ]);
+                            if ($order->total <= $item['amount_in']) {
+                                $order->status = 'completed';
+                                $order->save();
+                                // update enrollment 
+                                $order_details = OrderDetail::where('order_id', $order->id)->pluck('course_id')->all();
+                                foreach ($order_details as $course_id) {
+                                    $courseUpdate = Course::find($course_id);
+                                    $courseUpdate->enrollment_count += 1;
+                                    $courseUpdate->save();
+                                    Enrollment::create([
+                                        'user_id' => $order->user_id,
+                                        'course_id' => $course_id,
+                                        'status' => true,
+                                        'start_date' => Carbon::now()
+                                    ]);
+                                }
+                                // create transaction
+                                $bank_number = Setting::where(['type' => 'ADMIN', 'key' => 'BANKING_NUMBER'])->pluck('value');
+                                Transaction::create([
+                                    'order_id' => $order->id,
+                                    'from_name' => $order->email,
+                                    'from_number_card' => '',
+                                    'type' => 'banking',
+                                    'to_user' => 'admin',
+                                    'to_number_card' => $bank_number,
+                                    'amount' => $order->total,
+                                    'status' => 'success'
+                                ]);
+                                // update voucher 
+                                if ($order->voucher_id) {
+                                    $voucher = Voucher::find($order->voucher_id);
+                                    $voucher->used += 1;
+                                    $voucher->save();
+                                }
+
+                                $responseJson = Response::json(true, 'Order is paid', ['is_changed' => true, 'order' => $order, 'transaction' => $transaction]);
+
+                                Cart::where('user_id', auth('api')->id())->delete();
+                            } else {
+                               
+                                $responseJson = Response::json(false, 'Payment not completed. Your amount is not enough!', ['is_changed' => false, 'order' => $order, 'transaction' => $transaction]);
+                            }
+                            $flag = false;
+                            break;
+                        }
+                    }
+                }
+                $attempts++;
+                // if ($flag == true) {
+                //     sleep(10);
+                // }
+            }
+           
+            return $responseJson;
+            // return $attempts;
         } catch (Exception $e) {
             return Response::json(false, 'Error: ' . $e->getMessage());
         }

@@ -21,7 +21,7 @@ class CourseStep extends Model
     ];
     protected $hidden = [
         "created_at",
-        'updated_at'
+        // 'updated_at'
     ];
     public function lecture()
     {
@@ -33,7 +33,7 @@ class CourseStep extends Model
     }
     public function answers()
     {
-        return $this->hasMany(Answer::class, 'parent_id');
+        return $this->hasMany(Answer::class, 'parent_id')->inRandomOrder();
     }
     public function section()
     {

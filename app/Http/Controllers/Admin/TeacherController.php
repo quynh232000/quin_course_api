@@ -25,7 +25,10 @@ class TeacherController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'bank_id' => 'required',
-            'card_number' => 'required'
+            'card_number' => 'required',
+            'major' => 'required',
+            'position' => 'required',
+            'description' => 'required',
         ]);
         if ($validate->fails()) {
             return redirect()->back()->withInput()->with('error', 'Please inter all information!');
@@ -42,13 +45,19 @@ class TeacherController extends Controller
         if ($teacherinfo) {
             $teacherinfo->bank_id = $request->bank_id;
             $teacherinfo->card_number = $request->card_number;
+            $teacherinfo->major = $request->major;
+            $teacherinfo->position = $request->position;
+            $teacherinfo->description = $request->description;
             $teacherinfo->save();
 
         } else {
             $teacher = Teacherinfo::create([
                 'user_id' => auth('admin')->user()->id,
                 'bank_id' => $request->bank_id,
-                'card_number' => $request->card_number
+                'card_number' => $request->card_number,
+                'major' => $request->major,
+                'position' => $request->position,
+                'description' => $request->description,
             ]);
             if ($request->momo_number) {
                 $teacher->momo_number = $request->momo_number;

@@ -132,7 +132,7 @@
                                             Icon url</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
-                                            Parent Id</th>
+                                            Count Courses</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Created At</th>
@@ -176,7 +176,7 @@
                                             </td>
                                             <td class="">
                                                 <div class="d-flex justify-content-center"><span
-                                                        class="text-xs font-weight-bold "> {{ $item->parent_id }}</span>
+                                                        class="text-xs font-weight-bold "> {{ $item->countProducts()}}</span>
                                                 </div>
                                             </td>
                                             <td>

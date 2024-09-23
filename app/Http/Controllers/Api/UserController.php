@@ -37,10 +37,16 @@ class UserController extends Controller
      *             @OA\Schema(
      *                 type="object",
      *                 @OA\Property(
-     *                     property="full_name",
-     *                     description="Your full name",
+     *                     property="first_name",
+     *                     description="Your first name",
      *                     type="string",
-     *                      example="Nguyen van a"
+     *                      example="Nguyen van "
+     *                 ),
+     *                 @OA\Property(
+     *                     property="last_name",
+     *                     description="Your last name",
+     *                     type="string",
+     *                      example="An "
      *                 ),
      *                 @OA\Property(
      *                     property="email",
@@ -68,7 +74,8 @@ class UserController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'full_name' => 'required|string|max:255',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:6',
                 'code' => 'required|string|min:6',
@@ -77,10 +84,10 @@ class UserController extends Controller
                 return Response::json(false, 'Missing parameters', $validator->errors());
             }
             // check full_name has to words 
-            $words = explode(' ', $request->full_name);
-            if (count($words) < 2) {
-                return Response::json(false, 'Full name must have at least two words');
-            }
+            // $words = explode(' ', $request->full_name);
+            // if (count($words) < 2) {
+            //     return Response::json(false, 'Full name must have at least two words');
+            // }
             // check email is exists in database 
             $user = User::where('email', $request->email)->first();
             if ($user) {
@@ -97,7 +104,7 @@ class UserController extends Controller
                 $username = $$username . ($checkUsername + 1);
             }
             // create new user and login
-            $first_name = implode(' ', array_slice($words, 0, count($words) - 1));
+            $first_name = $request->first_name;
 
             $list_avatars = [
                 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg',
@@ -108,13 +115,13 @@ class UserController extends Controller
             $user = User::create([
                 'avatar' => "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg",
                 'uuid' => Str::uuid(),
-                'full_name' => $request->full_name,
+                'full_name' => $request->first_name.' '.$request->last_name,
                 'username' => $username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'email_verified_at' => now(),
                 'first_name' => $first_name,
-                'last_name' => $words[count($words) - 1],
+                'last_name' =>$request->last_name,
                 'avatar_url' => $list_avatars[rand(0, count($list_avatars) - 1)]
             ]);
 
@@ -494,7 +501,7 @@ class UserController extends Controller
                 return Response::json(false, "Teacher role does not exist");
             }
             $user_ids = UserRole::where('role_id', $role->id)->pluck('user_id')->all();
-            $teachers = User::whereIn('id', $user_ids)->paginate($limit, ['*'], 'page', $page);
+            $teachers = User::whereIn('id', $user_ids)->with('TeacherInfo')->paginate($limit, ['*'], 'page', $page);
 
             $teachers->getCollection()->transform(function ($item) {
                 $item->roles = $item->roles();
@@ -506,4 +513,131 @@ class UserController extends Controller
             return Response::json(false, "Error from server: " . $e->getMessage());
         }
     }
+
+    /**
+     * @OA\Get(
+     *      path="/api/user/teacher_info/{username}",
+     *      operationId="teacher_info",
+     *      tags={"Users"},
+     *      summary="Get  teacher information",
+     *      description="Returns  teachers",
+     *      @OA\Parameter(
+     *         description="username of teacher",
+     *         in="path",
+     *         name="username",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ),
+     * 
+     *     
+     * )
+     */
+    public function teacher_info($username)
+    {
+        try {
+            if (!$username) {
+                return Response::json(false, "Username is required");
+            }
+            $teacher = User::where('username', $username)->with('socials')->first();
+            if (!$teacher) {
+                return Response::json(false, "Teacher not found");
+            }
+            $roles = $teacher->roles();
+            if (!in_array('Teacher', $roles->toArray())) {
+                return Response::json(false, "User is not a teacher");
+            }
+            $teacher->roles = $roles;
+            $teacher->teacher_info = $teacher->TeacherInfo;
+            $teacher_dashboard['count_courses'] = $teacher->count_courses();
+            $teacher_dashboard['count_students'] = $teacher->count_students();
+            $teacher->teacher_dashboard = $teacher_dashboard;
+         
+            return Response::json(true, 'Get teacher information successfully!',  $teacher);
+
+        } catch (Exception $e) {
+            return Response::json(false, "Error from server: " . $e->getMessage());
+        }
+    }
+    /**
+     * @OA\Get(
+     *      path="/api/user/user_info/{username}",
+     *      operationId="user_info",
+     *      tags={"Users"},
+     *      summary="Get  user_info information",
+     *      description="Returns  user_info",
+     *      @OA\Parameter(
+     *         description="username of user_info",
+     *         in="path",
+     *         name="username",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ),
+     * 
+     *     
+     * )
+     */
+    public function user_info($username)
+    {
+        try {
+            if (!$username) {
+                return Response::json(false, "Username is required");
+            }
+            $user = User::where('username', $username)->with('socials')->first();
+            if (!$user) {
+                return Response::json(false, "Teacher not found");
+            }
+            $roles = $user->roles();
+            $user->roles = $roles;
+            // $user->teacher_info = $user->TeacherInfo;
+            // $teacher_dashboard['count_courses'] = $user->count_courses();
+            // $teacher_dashboard['count_students'] = $user->count_students();
+            // $user->teacher_dashboard = $teacher_dashboard;
+         
+            return Response::json(true, 'Get user information successfully!',  $user);
+
+        } catch (Exception $e) {
+            return Response::json(false, "Error from server: " . $e->getMessage());
+        }
+    }
+
+     /**
+     * @OA\Get(
+     *      path="/api/user/{username}/courses",
+     *      operationId="user_courses",
+     *      tags={"Users"},
+     *      summary="Get  user_courses information",
+     *      description="Returns  user_info",
+     *      @OA\Parameter(
+     *         description="username of user_info",
+     *         in="path",
+     *         name="username",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ),
+     * 
+     *     
+     * )
+     */
+    
+
+
+
 }

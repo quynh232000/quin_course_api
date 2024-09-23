@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\BlogTag;
 use App\Models\Response;
 use App\Models\Tag;
+use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Http\Request;
@@ -36,6 +37,15 @@ class Blogcontroller extends Controller
      *             type="number",
      *         )
      *     ),
+     *    @OA\Parameter(
+     *         description="",
+     *         in="query",
+     *         name="user_id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="number",
+     *         )
+     *     ),
 
      * )
      */
@@ -43,7 +53,17 @@ class Blogcontroller extends Controller
     {
         try {
             $limit = $request->limit ?? 4;
-            $blogs = Blog::where(['is_published' => true, 'is_show' => true,'deleted_at'=>null])->with(['tags.tag', 'user'])->limit($limit)->get();
+            if ($request->user_id && $request->user_id != '') {
+                $checkuser = User::where('id', $request->user_id)->first();
+                if (!$checkuser) {
+                    return Response::json(false, 'User not found');
+                }
+                $blogs = Blog::where(['is_published' => true, 'is_show' => true, 'deleted_at' => null, 'user_id' => $request->user_id])->with(['tags.tag', 'user'])->limit($limit)->get();
+
+            } else {
+                $blogs = Blog::where(['is_published' => true, 'is_show' => true, 'deleted_at' => null])->with(['tags.tag', 'user'])->limit($limit)->get();
+
+            }
             // $blogs = Blog::all();
             return Response::json(true, 'Get list blog successfully!', $blogs);
         } catch (Exception $e) {
@@ -123,7 +143,7 @@ class Blogcontroller extends Controller
             $page = $request->page ?? 1;
 
 
-            $data = Blog::where(['user_id'=> auth('api')->id(),'deleted_at'=>null])->with('tags.tag')->offset(($page - 1) * $limit)
+            $data = Blog::where(['user_id' => auth('api')->id(), 'deleted_at' => null])->with('tags.tag')->offset(($page - 1) * $limit)
                 ->limit($limit)
                 ->get();
 
@@ -180,7 +200,7 @@ class Blogcontroller extends Controller
             }
             $limit = $request->limit ?? 10;
             $page = $request->page ?? 1;
-            $data = Blog::where(['is_published' => true, 'is_show' => true, 'user_id' => $blog->user_id,'deleted_at'=>null])
+            $data = Blog::where(['is_published' => true, 'is_show' => true, 'user_id' => $blog->user_id, 'deleted_at' => null])
                 ->with(['tags.tag', 'user'])
                 ->offset(($page - 1) * $limit)
                 ->limit($limit)
@@ -238,7 +258,7 @@ class Blogcontroller extends Controller
             }
             $limit = $request->limit ?? 10;
             $page = $request->page ?? 1;
-            $blogs = $tag->blogs()->where(['is_published' => true, 'is_show' => true,'deleted_at'=>null])
+            $blogs = $tag->blogs()->where(['is_published' => true, 'is_show' => true, 'deleted_at' => null])
                 ->with(['tags.tag', 'user'])
                 ->offset(($page - 1) * $limit)
                 ->limit($limit)
@@ -522,57 +542,57 @@ class Blogcontroller extends Controller
             if ($user->id != $blog->user_id) {
                 return Response::json(false, 'You are not the author of this blog');
             }
-           
+
             BlogTag::where('blog_id', $blog_id)->where('tag_id', $tag_id)->delete();
             return Response::json(true, 'Delete blog successfully!');
         } catch (Exception $e) {
             return Response::json(false, 'Error from server... ', $e->getMessage());
         }
     }
-     /**
- * @OA\Post(
- *      path="/api/blogs/delete_blog/{blog_id}",
- *      operationId="delete_blog",
- *      tags={"Blog"},
- *      summary="Delete  blog",
- *      description="Returns  blog information",
- *      @OA\Parameter(
- *          name="blog_id",
- *          description="ID of the blog ",
- *          required=true,
- *          in="path",
- *          @OA\Schema(
- *              type="string"
- *          )
- *      ),
- *      security={{
- *         "bearer": {}
- *     }},
- *      @OA\Response(response="405", description="Invalid input"),
- * )
- */
-public function delete_blog(Request $request, $blog_id)
-{
-    try {
-        if (!$blog_id ) {
-            return Response::json(false, 'Missing Blog ID ');
+    /**
+     * @OA\Post(
+     *      path="/api/blogs/delete_blog/{blog_id}",
+     *      operationId="delete_blog",
+     *      tags={"Blog"},
+     *      summary="Delete  blog",
+     *      description="Returns  blog information",
+     *      @OA\Parameter(
+     *          name="blog_id",
+     *          description="ID of the blog ",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      security={{
+     *         "bearer": {}
+     *     }},
+     *      @OA\Response(response="405", description="Invalid input"),
+     * )
+     */
+    public function delete_blog(Request $request, $blog_id)
+    {
+        try {
+            if (!$blog_id) {
+                return Response::json(false, 'Missing Blog ID ');
+            }
+            $blog = Blog::where('id', $blog_id)->with('tags.tag')->first();
+            if (!$blog) {
+                return Response::json(false, 'Not found blog with ID: ' . $blog_id);
+            }
+            $user = auth('api')->user();
+            // check is author blog
+            if ($user->id != $blog->user_id) {
+                return Response::json(false, 'You are not the author of this blog');
+            }
+            $blog->deleted_at = Carbon::now();
+            $blog->save();
+            return Response::json(true, 'Delete blog successfully!', $blog);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error from server... ', $e->getMessage());
         }
-        $blog = Blog::where('id', $blog_id)->with('tags.tag')->first();
-        if (!$blog) {
-            return Response::json(false, 'Not found blog with ID: ' . $blog_id);
-        }
-        $user = auth('api')->user();
-        // check is author blog
-        if ($user->id != $blog->user_id) {
-            return Response::json(false, 'You are not the author of this blog');
-        }
-        $blog->deleted_at = Carbon::now();
-        $blog->save();
-        return Response::json(true, 'Delete blog successfully!',$blog);
-    } catch (Exception $e) {
-        return Response::json(false, 'Error from server... ', $e->getMessage());
     }
-}
 
 
 }

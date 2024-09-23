@@ -165,17 +165,17 @@ class Course extends Model
     }
     public function reviews()
     {
-        $user = null;
-        if (auth('api')->check()) {
-            $user = auth('api')->user();
-        } else if (auth('amin')->check()) {
-            $user = auth('amin')->user();
-        }
-        if ($user) {
-            return Review::where('course_id', $this->id)->where('user_id', '!=', $user->id)->limit(10);
-        } else {
-            return $this->hasMany(Review::class, 'course_id')->limit(10);
-        }
+        // $user = null;
+        // if (auth('api')->check()) {
+        //     $user = auth('api')->user();
+        // } else if (auth('admin')->check()) {
+        //     $user = auth('admin')->user();
+        // }
+        // if ($user) {
+        //     return Review::where('course_id', $this->id)->where('user_id', '!=', $user->id)->limit(10);
+        // } else {
+        // }
+        return $this->hasMany(Review::class, 'course_id')->limit(10);
     }
     public function category()
     {
@@ -200,6 +200,48 @@ class Course extends Model
             $total += $section->total_duration();
         }
         return $total;
+    }
+
+    public function total_sections()
+    {
+        return $this->sections()->count() ?? 0;
+    }
+    public function total_steps()
+    {
+        $section_ids = $this->sections()->pluck('id');
+        $total_steps = CourseStep::whereIn('section_id', $section_ids)->count() ?? 0;
+        return $total_steps;
+    }
+    public function my_review()
+    {
+        if (auth('api')->check()) {
+            $review = Review::where(['user_id' => auth('api')->id(), 'course_id' => $this->id])->first();
+            if ($review) {
+
+                return ['is_log' => true, 'can_review' => true, 'review' => $review];
+            } else {
+                return ['is_log' => true, 'can_review' => false, 'review' => null];
+            }
+
+
+        } else {
+            return ['is_log' => false, 'can_review' => false, 'review' => null];
+
+        }
+
+    }
+
+    public function percent_learning($user_id)
+    {
+        $enrollment = Enrollment::where(['user_id' => $user_id, 'course_id' => $this->id])->first();
+        $learningLog = LearningLog::where(['user_id' => $user_id, 'course_id' => $this->id])->first();
+        if ($enrollment && $learningLog) {
+            $total_steps = $this->total_steps();
+            $completed_steps = count(json_decode($learningLog->user_progress));
+            return ($completed_steps / $total_steps) * 100;
+        } else {
+            return 0;
+        }
     }
 }
 

@@ -57,9 +57,9 @@ class CartController extends Controller
                     'course_id' => $id,
                     'user_id' => auth('api')->id(),
                 ]);
-                return Response::json(true, 'Course added to cart');
+                return Response::json(true, 'Thêm khóa học vào giỏ hàng thành công!');
             }
-            return Response::json(true, 'Course already in cart');
+            return Response::json(true, 'Khóa học đã có trong giỏ hàng!');
         } catch (Exception $e) {
             return Response::json(false, 'Error: ', $e->getMessage());
         }
@@ -139,9 +139,14 @@ class CartController extends Controller
      */
     public function asyn_cart(Request $request)
     {
+        $page=$request->page??1;
+        $limit=$request->limit??30;
         try {
             $ids = $request->id;
-            $cart_ids = Cart::where('user_id', auth('api')->user()->id)->pluck('course_id')->toArray();
+            $cart_ids = Cart::where('user_id', auth('api')->user()->id)->pluck('course_id')->toArray()??[];
+            if($request->id && is_array($request->id) && count($request->id) >0){
+                
+            }
             $new_ids = array_diff($ids, $cart_ids);
             $has_ids=[];
             foreach ($new_ids as $id) {
@@ -154,7 +159,21 @@ class CartController extends Controller
                     ]);
                 }
             }
-            return Response::json(true, 'Update Asyn cart successfully', array_merge($cart_ids, $has_ids));
+            // list
+            $list_ids =count($has_ids) ==0 ?$cart_ids: array_merge($cart_ids, $has_ids);
+            // return $list_ids;
+            $query = Course::whereNotNull('published_at')
+                ->where(['deleted_at' => null])->with(['user']);
+            $query->whereIn('id', $list_ids);
+            $data = $query->paginate($limit, ['*'], 'page', $page);
+            $data->getCollection()->transform(function ($item)  {
+                $item->rating = $item->rating();
+                $item->total_steps = $item->total_steps();
+                $item->total_sections = $item->total_sections();
+               
+                return $item;
+            });
+            return Response::json(true, 'Update Async cart successfully', $data->items());
         } catch (Exception $e) {
             \Log::error('Error updating asynchronous cart: ' . $e->getMessage());
             return Response::json(false, 'Error: ' . $e->getMessage());

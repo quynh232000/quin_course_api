@@ -20,14 +20,24 @@ class Category extends Model
         "created_at",
         'updated_at'
     ];
-    // public function children()
-    // {
-    //     return $this->hasMany(Category::class, 'parent_id');
-    // }
-
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+    public function allChildren()
+    {
+        return $this->children()->with('allChildren');
+    }
+    public function countProducts()  {
+        $allCateIds = $this->allChildren()->pluck('id');
+        $allCateIds[] =$this->id;
+        $count = Course::whereIn('category_id', $allCateIds)->count();
+        return $count ??0;
+     
+        
+    } 
     public function hasChild()
     {
-
         return Category::where('parent_id', $this->id)->exists() ?? false;
     }
     public function childCategories($id =null)

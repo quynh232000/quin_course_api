@@ -17,6 +17,9 @@ return new class extends Migration
             $table->foreignId('bank_id')->constrained()->cascadeOnDelete();
             $table->string('card_number')->nullable();
             $table->string('momo_number')->nullable();
+            $table->string('major')->nullable();
+            $table->string('position')->nullable();
+            $table->text('desciption')->nullable();
             $table->timestamps();
         });
     }

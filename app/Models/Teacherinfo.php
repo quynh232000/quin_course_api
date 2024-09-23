@@ -15,10 +15,17 @@ class Teacherinfo extends Model
         'user_id',
         'bank_id',
         'card_number',
-        'momo_number'
+        'momo_number',
+        'major',
+        'position',
+        'desciption'
     ];
     public function bank()
     {
         return $this->belongsTo(Bank::class, 'bank_id');
     }
+    protected $hidden=[
+        'created_at',
+        'updated_at'
+    ];
 }

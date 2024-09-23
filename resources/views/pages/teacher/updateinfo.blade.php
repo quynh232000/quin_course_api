@@ -102,6 +102,35 @@
                                             placeholder="09..">
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="example-text-input" class="form-control-label">Major</label>
+                                                <input class="form-control" type="text" name="major"
+                                                    value="{{ old('major') ? old('major') : ($teacherinfo && $teacherinfo->major ? $teacherinfo->major : '') }}"
+                                                    placeholder="Doctor, photographer,..">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="example-text-input" class="form-control-label">Position</label>
+                                                <input class="form-control" type="text" name="position"
+                                                    value="{{ old('position') ? old('position') : ($teacherinfo && $teacherinfo->position ? $teacherinfo->position : '') }}"
+                                                    placeholder="Manager, Senior">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Description</label>
+
+                                        <textarea name="description" id="" class="form-control" placeholder="Your introduction.." rows="5">{{ old('description') ? old('description') : ($teacherinfo && $teacherinfo->description ? $teacherinfo->description : '') }}</textarea>
+                                    </div>
+                                </div>
+
+
 
                                 <div>
                                     @if (session('error'))

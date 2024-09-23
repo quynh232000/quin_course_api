@@ -34,10 +34,10 @@ class CategoryController extends Controller
 *     
 * )
 */
-    public function get_child($id=0)
+    public function get_child($id=0,Request $request)
     {
-       
-        $data = Category::where('parent_id', $id)->get()->map(function ($category) {
+       $limit = $request->limit ??100;
+        $data = Category::where('parent_id', $id)->limit($limit)->get()->map(function ($category) {
             $category->haschild = $category->hasChild();
             return $category;
         });
@@ -62,7 +62,10 @@ class CategoryController extends Controller
 public function all()
 {
    
-    $data = Category::all();
+    $data = Category::all()->map(function ($category) {
+        $category->haschild = $category->hasChild();
+        return $category;
+    });;
     return Response::json(true, 'Success', $data ?? []);
 }
 }

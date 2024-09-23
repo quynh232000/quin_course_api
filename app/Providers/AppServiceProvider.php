@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,6 +15,9 @@ class AppServiceProvider extends ServiceProvider
         // $this->app->singleton(TransactionHistoryProvider::class, function ($app) {
         //      new TransactionHistoryProvider();
         // });
+        // if ($this->app->isLocal()) {
+        //     Artisan::call('transactions:get-history');
+        // }
     }
 
     /**
@@ -21,6 +25,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        // "serve-history": [
+        //     "php artisan serve",
+        //     "php artisan transactions:get-history"
+        // ]
+        // if ($this->app->isLocal()) {
+        //     Artisan::call('transactions:get-history');
+        // }
     }
 }

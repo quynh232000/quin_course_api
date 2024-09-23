@@ -20,6 +20,7 @@ class Answer extends Model
     protected $hidden = [
         "created_at",
         'updated_at',
+        'explain',
         'is_correct'
     ];
 }

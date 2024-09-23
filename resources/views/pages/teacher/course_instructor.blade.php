@@ -40,8 +40,13 @@
             <div class="py-4">
                 @forelse ($courses as $item)
                     <div class="border d-flex mb-4">
-                        <div class="border-end">
-                            <img height="118px" width="118px" class="object-fit-cover"
+                        <style>
+                            #imgcourse{
+                                background-color: rgb(228, 228, 228)
+                            }
+                        </style>
+                        <div class="border-end d-flex justify-content-center align-items-center" id="imgcourse" style=" width:118px;height:118px; ">
+                            <img style="width: 100%" class="object-fit-contain"
                                 src="{{ $item->image_url ? $item->image_url : 'https://s.udemycdn.com/course/200_H/placeholder.jpg' }}"
                                 alt="">
                         </div>

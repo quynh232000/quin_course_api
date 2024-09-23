@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -82,5 +83,28 @@ class User extends Authenticatable implements JWTSubject
     public function isEnrolled($couse_id): bool
     {
         return Enrollment::where(['user_id' => $this->id, 'course_id' => $couse_id])->exists();
+    }
+    public function TeacherInfo()
+    {
+        return $this->hasOne(Teacherinfo::class, 'user_id');
+    }
+    public function count_courses()
+    {
+        return Course::where('user_id', $this->id)->count() ?? 0;
+    }
+    public function count_enrollments()
+    {
+        return Enrollment::where('user_id', $this->id)->count() ?? 0;
+    }
+    public function count_students()
+    {
+        return DB::table('enrollments')
+            ->join('courses', 'courses.id', '=', 'enrollments.course_id')
+            ->where('courses.user_id', $this->id)
+            ->distinct('enrollments.user_id')
+            ->count('enrollments.user_id') ?? 0;
+    }
+    public function socials(){
+        return $this->hasMany(Usersocial::class,'user_id');
     }
 }

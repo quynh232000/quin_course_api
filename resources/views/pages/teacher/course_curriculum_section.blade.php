@@ -46,6 +46,9 @@
                                 @if ($item->type == 'asm')
                                     <div class="fw-bold"> <i class="fa-solid fa-circle-check me-2"></i>Assignment:</div>
                                 @endif
+                                @if ($item->type == 'article')
+                                    <div class="fw-bold"> <i class="fa-regular fa-newspaper me-2"></i>Article:</div>
+                                @endif
                                 <div class="d-flex gap-1 align-items-center flex-1 changetitle">
                                     @if ($item->type == 'lecture')
                                         <i class="fa-regular fa-clipboard"></i>
@@ -68,6 +71,13 @@
                             <div class="col-md-4 d-flex gap-4 pe-4 justify-content-end">
 
                                 @if ($item->type == 'lecture')
+                                    <a title="Add content"
+                                        href="/course/{{ $course->id }}/manage/curriculum/section/{{ $section->id }}/{{ $item->type }}/{{ $item->id }}"
+                                        class="border py-1 px-2 mb-0">
+                                        <i class="fa-solid fa-plus"></i> Content
+                                    </a>
+                                @endif
+                                @if ($item->type == 'article')
                                     <a title="Add content"
                                         href="/course/{{ $course->id }}/manage/curriculum/section/{{ $section->id }}/{{ $item->type }}/{{ $item->id }}"
                                         class="border py-1 px-2 mb-0">
@@ -115,6 +125,8 @@
                         class="fa-solid fa-plus me-2"></i>Quiz</button>
                 <button class="btn btn-outline-primary btn-sm btn-add" data="asm"><i
                         class="fa-solid fa-plus me-2"></i>Assignment</button>
+                <button class="btn btn-outline-primary btn-sm btn-add" data="article"><i
+                        class="fa-solid fa-plus me-2"></i>Article</button>
             </div>
         </div>
 
@@ -133,6 +145,9 @@
                     break;
                 case 'asm':
                     title = 'New Assignment'
+                    break;
+                    case 'article':
+                    title = 'New Article'
                     break;
 
                 default:

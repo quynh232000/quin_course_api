@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -120,6 +121,9 @@ class OrderController extends Controller
         // update enrollment 
         $order_details = OrderDetail::where('order_id', $order->id)->pluck('course_id')->all();
         foreach ($order_details as $course_id) {
+            $courseUpdate = Course::find($course_id);
+            $courseUpdate->enrollment_count += 1;
+            $courseUpdate->save();
             Enrollment::create([
                 'user_id' => $order->user_id,
                 'course_id' => $course_id,

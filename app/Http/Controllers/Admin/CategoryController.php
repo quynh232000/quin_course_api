@@ -47,8 +47,7 @@ class CategoryController extends Controller
         } else {
 
             $validetor = Validator::make($request->all(), [
-                'name' => "required|string",
-                "icon" => "required|file"
+                'name' => "required|string"
             ]);
             if ($validetor->fails()) {
                 return redirect()->back()->with("error", "Name and Icon file are required");

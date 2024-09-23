@@ -772,8 +772,9 @@ class CourseController extends Controller
             $course->price = $request->price;
             $course->save();
         }
-        if ($request->percent_sale && $request->percent_sale != $course->percent_sale) {
-            if ($request->percent_sale > 0 && $request->percent_sale < 100) {
+        // dd($request->percent_sale);
+        if (isset($request->percent_sale) && $request->percent_sale != $course->percent_sale) {
+            if ($request->percent_sale >= 0 && $request->percent_sale <= 100) {
                 $course->percent_sale = $request->percent_sale;
                 $course->save();
 

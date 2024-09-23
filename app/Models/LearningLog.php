@@ -17,4 +17,7 @@ class LearningLog extends Model
         'time_start',
         'is_completed'
     ];
+
+
+    
 }
