@@ -27,6 +27,10 @@ class CourseStep extends Model
     {
         return $this->hasOne(CourseLecture::class, 'step_id');
     }
+    public function article()
+    {
+        return $this->hasOne(CourseArticle::class, 'step_id');
+    }
     public function question()
     {
         return $this->hasOne(Question::class, 'parent_id');

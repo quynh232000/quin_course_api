@@ -105,6 +105,14 @@
                     </div>
                 @endif
             @endif
+            @if ($step->type == 'article')
+                <div class="row d-flex h-100 border-bottom position-relative video-body overflow-scroll">
+                    <h3 class="px-5 mt-3">{{$step->title}}</h3>
+                    <div class="p-5 ">
+                        {!! $step->article->content !!}
+                    </div>
+                </div>
+            @endif
 
 
 

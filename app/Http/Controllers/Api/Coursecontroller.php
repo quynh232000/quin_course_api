@@ -935,7 +935,7 @@ class Coursecontroller extends Controller
             $time_next->addSeconds(round($step->duration * 0.8));
             if ($time_next->greaterThan(Carbon::now())) {
                 $waitTime = $time_next->diffForHumans(Carbon::now(), true);
-                return Response::json(false, 'You cannot study this step now. Please wait until ' . $waitTime);
+                return Response::json(false, 'You cannot study this step now. Please wait until ' . $waitTime,$waitTime);
             }
             // save change next step 
             $next_step_uuid = $step->next_step_uuid($course->id);
@@ -1033,6 +1033,9 @@ class Coursecontroller extends Controller
                     $step->question = $step->question;
                     $step->answers = $step->answers;
                     break;
+                    case 'article':
+                        $step->article = $step->article;
+                        break;
                 default:
                     break;
             }
@@ -1090,6 +1093,67 @@ class Coursecontroller extends Controller
             }
             $answer->makeVisible(['explain', 'is_correct']);
             return Response::json(true, 'ok', $answer);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error from server...', $e->getMessage());
+        }
+    }
+
+      /**
+     * @OA\Post(
+     *      path="/api/course/certificate/{slug}",
+     *      operationId="certificate",
+     *      tags={"Course"},
+     *      summary="get certificate",
+     *      description="certificate",
+     *      @OA\Parameter(
+     *         description="Slug of this course certificate",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     security={{
+     *         "bearer": {}
+     *     }},
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ), 
+     * )
+     */
+    public function certificate($slug)
+    {
+        try {
+            if (!$slug) {
+                return Response::json(false, 'Missing parameter slug course');
+            }
+            $course = Course::where('slug',$slug)->first();
+            if (!$course) {
+                return Response::json(false, 'Course not found');
+            }
+            $user = auth('api')->user();
+            if (!$course->hasEnrollment($user->id)) {
+                return Response::json(false, 'You are not enrolled in this course');
+            }
+            // check learning log 
+            $learning_log = LearningLog::where(['course_id' => $course->id, 'user_id' => $user->id])->first();
+            $step = CourseStep::where('uuid', $learning_log->current_step)->first();
+            if (!$step) {
+                return Response::json(false, 'Step not found');
+            }
+            $next_step = $step->next_step_uuid($course->id);
+            if($next_step){
+                return Response::json(true,'Please complete your course',['type'=>'continue','course'=>$course]);
+            }
+            $data = [
+                'title'=>$course->certificate_name,
+                'date'=>$learning_log->time_start,
+                'fullname'=>auth()->user()->first_name.' '.auth()->user()->last_name,
+                'username'=>auth()->user()->username
+            ];
+            return Response::json(true, 'ok', ['type'=>'complete','certificate'=>$data,'course'=>$course]);
         } catch (Exception $e) {
             return Response::json(false, 'Error from server...', $e->getMessage());
         }

@@ -30,7 +30,7 @@
         <div class="bg-dark px-4 py-2 d-flex justify-content-between">
             <a href="/course/instructor" class="text-white d-flex gap-2 align-items-center"><i
                     class="fa-solid fa-chevron-left"></i>Back your course </a>
-            <div >
+            <div>
                 <h5 class="text-white">{{ $course->title }}</h5>
             </div>
             <form method="POST" action="{{ route('published_course', ['id' => $course->id]) }}">
@@ -93,6 +93,9 @@
                                                             @endif
                                                             @if ($step_child->type == 'lecture')
                                                                 <i class="fa-solid fa-circle-play"></i>
+                                                            @endif
+                                                            @if ($step_child->type == 'article')
+                                                                <i class="fa-regular fa-newspaper"></i>
                                                             @endif
                                                         </span>
                                                         <span>{{ format_seconds_to_time($step_child->duration) }}</span>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Answer;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\CourseArticle;
 use App\Models\CourseIntend;
 use App\Models\CourseLecture;
 use App\Models\CourseSection;
@@ -440,6 +441,76 @@ class CourseController extends Controller
 
         return redirect()->back()->with($type_mess, $mess);
     }
+
+
+    public function course_curriculum_article($id, $section_id, $step_id)
+    {
+        if (!$id) {
+            return redirect('/notfund')->withInput()->with('message', 'Course ID is required');
+        }
+        $course = Course::find($id);
+        if (!$course || !$section_id || !$step_id) {
+            return redirect('/notfund')->withInput()->with('message', "Missing ID course or section ID or step ID");
+        }
+        if ($course->user_id != auth('admin')->user()->id) {
+            return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
+        }
+
+        $section = CourseSection::find($section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+        $step = CourseStep::where('id', $step_id)->with('article')->first();
+        if (!$step) {
+            return redirect()->back()->with('error', 'Step not found');
+        }
+
+
+        return view('pages.teacher.course_curriculum_article', compact('course', 'section', 'step'));
+    }
+    public function _course_curriculum_article($id, $section_id, $step_id, Request $request)
+    {
+        if (!$id) {
+            return redirect('/notfund')->withInput()->with('message', 'Course ID is required');
+        }
+        $course = Course::find($id);
+        if (!$course || !$section_id || !$step_id) {
+            return redirect('/notfund')->withInput()->with('message', "Missing ID course or section ID or step ID");
+        }
+        if ($course->user_id != auth('admin')->user()->id) {
+            return redirect('/notfund')->withInput()->with('message', 'You are not authorized to access this course');
+        }
+
+        $section = CourseSection::find($section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+        $step = CourseStep::find($step_id);
+        if (!$step) {
+            return redirect()->back()->with('error', 'Step not found');
+        }
+        $validate = Validator::make($request->all(), [
+            'description' => 'required'
+        ]);
+        if ($validate->fails()) {
+            return redirect()->back()->withInput()->with('error', 'Required description');
+        }
+        $mess = 'Update article information successfully!';
+        $type_mess = 'success';
+
+        $article = CourseArticle::where('step_id', $step->id)->first();
+        if (!$article) {
+            $article = CourseArticle::create([
+                'step_id' => $step->id,
+                'content' => $request->description,
+            ]);
+        } else {
+            $article->content = $request->description;
+            $article->save();
+        }
+
+        return redirect()->back()->with($type_mess, $mess);
+    }
     public function course_curriculum_quiz($id, $section_id, $step_id)
     {
         if (!$id || !$section_id || !$step_id) {
@@ -833,9 +904,9 @@ class CourseController extends Controller
         $userroles = auth('admin')->user()->roles()->toArray();
         $checkRoleAdmin = in_array('Super Admin', $userroles);
         if ($checkRoleAdmin) {
-            $courses = Course::where('deleted_at',null)->latest()->get();
+            $courses = Course::where('deleted_at', null)->latest()->get();
         } else {
-            $courses = Course::where(['user_id'=> auth('admin')->user()->id,'deleted_at'=>null])->latest()->get();
+            $courses = Course::where(['user_id' => auth('admin')->user()->id, 'deleted_at' => null])->latest()->get();
         }
 
         return view('pages.teacher.course_instructor', compact('courses'));

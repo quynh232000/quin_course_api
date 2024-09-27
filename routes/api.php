@@ -102,6 +102,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
         Route::get('step/{course_id}/{step_uuid}', [CourseController::class, 'step_info']);
         Route::get('test/{uuid}', [CourseController::class, 'test']);
         Route::post('user_quiz/{id}',[Coursecontroller::class,'user_quiz']);
+        Route::get('certificate/{slug}',[Coursecontroller::class,'certificate']);
     });
     Route::prefix('notes')->group(function () {
         Route::post('create', [NoteController::class, 'create_note']);
