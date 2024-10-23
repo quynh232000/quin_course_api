@@ -60,7 +60,8 @@ class BlogController extends Controller
             }
             $blog = Blog::create([
                 'title' => $request->title,
-                'content' => $request->content,
+                'subtitle' => $request->subtitle,
+                'content' => $request->input('content'),
                 'slug' => $slug,
                 'from' => 'admin',
                 'user_id' => auth('admin')->user()->id,
@@ -104,7 +105,8 @@ class BlogController extends Controller
             }
 
             $blog->title = $request->title;
-            $blog->content = $request->content;
+            $blog->subtitle = $request->subtitle;
+            $blog->content = $request->input('content');
 
 
             $blog->is_published = $request->is_published && $request->is_published == 'on' ? true : false;

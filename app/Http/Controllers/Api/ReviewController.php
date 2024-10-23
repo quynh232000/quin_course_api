@@ -73,9 +73,10 @@ class ReviewController extends Controller
             $user_id = auth('api')->id();
             $check_review = Review::where(['user_id' => $user_id, 'course_id' => $request->course_id])->first();
             if ($check_review) {
-                $check_review->content = $request->content;
+                $check_review->content = $request->input('content');
                 $check_review->rating = $request->rating;
                 $check_review->save();
+                $check_review->user = $check_review->user;
                 return Response::json(true, 'Review updated successfully', $check_review);
 
             } else {
@@ -87,8 +88,9 @@ class ReviewController extends Controller
                     'user_id' => $user_id,
                     'course_id' => $request->course_id,
                     'rating' => $request->rating,
-                    'content' => $request->content
+                    'content' => $request->input('content')
                 ]);
+                $review->user = $review->user;
                 return Response::json(true, 'Review created successfully', $review);
             }
         } catch (Exception $e) {

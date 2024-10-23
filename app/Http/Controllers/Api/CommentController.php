@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\CourseStep;
 use App\Models\Reaction;
 use App\Models\Response;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Validator;
@@ -85,6 +86,20 @@ class CommentController extends Controller
                 'type' => $request->type,
                 'user_id' => auth('api')->id()
             ]);
+            $comment->commentor = $comment->commentor;
+
+            // get is reaction or not
+            // $item->reactions = $item->reactions();
+            $comment->reaction_count = $comment->reaction_count();
+            // $comment->replies = $comment->replies();
+            $comment->replies_count = $comment->replies_count();
+
+
+            $type_reaction = ($request->type == 'step' || $request->type == 'comment') ? 'comment' : 'blog';
+            $comment->is_reaction = $comment->is_reaction($type_reaction) ? true : false;
+            $comment->type_reaction = $comment->is_reaction($type_reaction);
+
+            $comment->all_reaction_type = $comment->all_type_reactions($type_reaction);
 
             return Response::json(true, 'Comment created successfully', $comment);
         } catch (Exception $e) {
@@ -186,14 +201,21 @@ class CommentController extends Controller
                 default:
                     break;
             }
-            $query->where(['commentable_id' => $commentable_id, 'type' => $request->type]);
+            $query->where(['commentable_id' => $commentable_id, 'type' => $request->type])->orderBy('updated_at', 'desc');
             $data = $query->paginate($limit, ['*'], 'page', $page);
-            $data->getCollection()->transform(function ($item) {
+            $data->getCollection()->transform(function ($item) use ($request) {
                 $item->commentor;
                 // $item->reactions = $item->reactions();
                 $item->reaction_count = $item->reaction_count();
                 // $item->replies = $item->replies();
                 $item->replies_count = $item->replies_count();
+
+                // get is reaction or not
+                $type_reaction = ($request->type == 'step' || $request->type == 'comment') ? 'comment' : 'blog';
+                $item->is_reaction = $item->is_reaction($type_reaction) ? true : false;
+                $item->type_reaction = $item->is_reaction($type_reaction);
+
+                $item->all_reaction_type = $item->all_type_reactions($type_reaction);
                 return $item;
             });
 
@@ -280,7 +302,13 @@ class CommentController extends Controller
                 }
             }
             // check reaction
-            $check_reaction = Reaction::where(['commentable_id' => $id])->first();
+
+            $check_reaction = Reaction::where([
+                'commentable_id' => $id,
+                'user_id' => auth('api')->id(),
+                'commentable_type' => $request->commentable_type
+            ])
+                ->first();
             if (!$check_reaction) {
                 $reaction = Reaction::create([
                     'user_id' => auth('api')->id(),
@@ -308,7 +336,7 @@ class CommentController extends Controller
         }
     }
 
-  /**
+    /**
      * @OA\Post(
      *      path="/api/comments/delete/{id}",
      *      operationId="deleteComment",
@@ -330,27 +358,28 @@ class CommentController extends Controller
      *      @OA\Response(response="405", description="Invalid input"),
      * )
      */
-    public function delete_comment($id){
+    public function delete_comment($id)
+    {
         try {
-            if(!$id){
+            if (!$id) {
                 return Response::json(false, 'Missing comment ID');
             }
             $comment = Comment::where('id', $id)->first();
-            if(!$comment){
+            if (!$comment) {
                 return Response::json(false, 'Comment not found');
             }
-            if($comment->user_id!= auth('api')->id()){
+            if ($comment->user_id != auth('api')->id()) {
                 return Response::json(false, 'You are not allowed to delete this comment');
             }
             $comment->is_deleted = 1;
             $comment->save();
             return Response::json(true, 'Comment deleted successfully');
         } catch (Exception $e) {
-            return Response::json(false, 'Error: '. $e->getMessage());
+            return Response::json(false, 'Error: ' . $e->getMessage());
         }
     }
 
-     /**
+    /**
      * @OA\Post(
      *      path="/api/comments/update/{id}",
      *      operationId="update_comment",
@@ -386,7 +415,7 @@ class CommentController extends Controller
      *      @OA\Response(response="405", description="Invalid input"),
      * )
      */
-    public function update_comment(Request $request,$id)
+    public function update_comment(Request $request, $id)
     {
         try {
             if (!$id) {
@@ -396,7 +425,7 @@ class CommentController extends Controller
             if (!$comment) {
                 return Response::json(false, 'Comment not found');
             }
-            if ($comment->user_id!= auth('api')->id()) {
+            if ($comment->user_id != auth('api')->id()) {
                 return Response::json(false, 'You are not allowed to update this comment');
             }
             // validation
@@ -404,6 +433,7 @@ class CommentController extends Controller
                 'comment' => 'required',
             ]);
             $comment->comment = $request->comment;
+            $comment->updated_at = Carbon::now();
             $comment->save();
             return Response::json(true, 'Comment updated successfully', $comment);
         } catch (Exception $e) {

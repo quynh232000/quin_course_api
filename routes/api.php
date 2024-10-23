@@ -34,6 +34,9 @@ Route::group([
     Route::post('verify-email', [UserController::class, 'verifyEmail']);
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
+    Route::post('withgoogle', [UserController::class, 'googleAuthentication']);
+    Route::post('forgotpassword', [UserController::class, 'forgotpassword']);
+    Route::post('changenewpassword', [UserController::class, 'changenewpassword']);
     Route::middleware([JwtMiddleware::class])->group(function () {
         Route::get('me', [UserController::class, 'me']);
     });
@@ -118,6 +121,17 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     });
     Route::post('reaction/{id}',[CommentController::class,'reaction_comment']);
     Route::post('reviews/create',[ReviewController::class,'create_review']);
+    Route::prefix('blog')->group(function(){
+        Route::post('{id}/save',[BlogController::class,'save_blog']);
+        Route::get('mysaved',[BlogController::class,'mysaved']);
+        Route::post('{id}/love',[BlogController::class,'loveblog']);
+        Route::get('/{id}/info', [Blogcontroller::class, 'get_blog_by_id']);
+    });
+    Route::prefix('auth')->group(function(){
+        Route::post('change_password',[UserController::class, 'change_password']);
+        Route::post('update-profile',[UserController::class, 'update_profile']);
+        Route::post('update-social',[UserController::class, 'update_social']);
+    });
 
 });
 Route::get('comments/list/{commentable_id}',[CommentController::class,'get_list_comments']);

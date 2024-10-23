@@ -187,11 +187,18 @@ class Course extends Model
     }
     public function enrollments()
     {
-        // return $this->hasMany(Enrollment::class, 'course_id');
+        return $this->hasMany(Enrollment::class, 'course_id');
     }
     public function hasEnrollment($user_id)
     {
         return Enrollment::where('course_id', $this->id)->where('user_id', $user_id)->exists();
+    }
+    public function isEnrollment()
+    {
+        if (auth('api')->check()) {
+            return Enrollment::where('course_id', $this->id)->where('user_id', auth('api')->id())->exists();
+        }
+        return false;
     }
     public function duration()
     {
@@ -215,13 +222,17 @@ class Course extends Model
     public function my_review()
     {
         if (auth('api')->check()) {
-            $review = Review::where(['user_id' => auth('api')->id(), 'course_id' => $this->id])->first();
-            if ($review) {
+            $check_enrollment = Enrollment::where(['course_id' => $this->id, 'user_id' => auth('api')->id()])->first();
+            if ($check_enrollment) {
+                $review = Review::where(['user_id' => auth('api')->id(), 'course_id' => $this->id])->first();
+                if ($review) {
 
-                return ['is_log' => true, 'can_review' => true, 'review' => $review];
-            } else {
-                return ['is_log' => true, 'can_review' => false, 'review' => null];
+                    return ['is_log' => true, 'can_review' => true, 'review' => $review];
+                } else {
+                    return ['is_log' => true, 'can_review' => true, 'review' => null];
+                }
             }
+            return ['is_log' => true, 'can_review' => false, 'review' => null,'message'=>'not enrollment this course'];
 
 
         } else {

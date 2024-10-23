@@ -285,8 +285,12 @@ class OrderController extends Controller
             if (!$order) {
                 return Response::json(false, 'Order not found');
             }
-            if($order->status !='new'){
+            if ($order->status != 'new') {
                 return Response::json(false, 'Order is completed', $order);
+            }
+            $check_bank_transaction = BankTransaction::where(['order_code' => $order_code])->first();
+            if ($check_bank_transaction) {
+                return Response::json(false, 'Order is finished', $order);
             }
             $attempts = 0;
             $flag = true;
@@ -303,18 +307,19 @@ class OrderController extends Controller
                     foreach ($transactions as $key => $item) {
                         if (Str::contains(Str::lower($item['transaction_content']), Str::lower($order->order_code))) {
 
-                            $transaction = BankTransaction::create([
-                                'bank_id' => $item['id'],
-                                'bank_brand_name' => $item['bank_brand_name'],
-                                'account_number' => $item['account_number'],
-                                'transaction_date' => $item['transaction_date'],
-                                'amount_out' => $item['amount_out'],
-                                'amount_in' => $item['amount_in'],
-                                'accumulated' => $item['accumulated'],
-                                'transaction_content' => $item['transaction_content'],
-                                'reference_number' => $item['reference_number']
-                            ]);
                             if ($order->total <= $item['amount_in']) {
+                                $transaction = BankTransaction::create([
+                                    'bank_id' => $item['id'],
+                                    'order_code' => $order_code,
+                                    'bank_brand_name' => $item['bank_brand_name'],
+                                    'account_number' => $item['account_number'],
+                                    'transaction_date' => $item['transaction_date'],
+                                    'amount_out' => $item['amount_out'],
+                                    'amount_in' => $item['amount_in'],
+                                    'accumulated' => $item['accumulated'],
+                                    'transaction_content' => $item['transaction_content'],
+                                    'reference_number' => $item['reference_number']
+                                ]);
                                 $order->status = 'completed';
                                 $order->save();
                                 // update enrollment 
@@ -353,7 +358,21 @@ class OrderController extends Controller
 
                                 Cart::where('user_id', auth('api')->id())->delete();
                             } else {
-                               
+                                $check_transaction = BankTransaction::where(['order_code' => $order_code])->first();
+                                if (!$check_transaction || ($check_transaction->bank_id != $item['id'])) {
+                                    $transaction = BankTransaction::create([
+                                        'bank_id' => $item['id'],
+                                        'order_code' => $order_code,
+                                        'bank_brand_name' => $item['bank_brand_name'],
+                                        'account_number' => $item['account_number'],
+                                        'transaction_date' => $item['transaction_date'],
+                                        'amount_out' => $item['amount_out'],
+                                        'amount_in' => $item['amount_in'],
+                                        'accumulated' => $item['accumulated'],
+                                        'transaction_content' => $item['transaction_content'],
+                                        'reference_number' => $item['reference_number']
+                                    ]);
+                                }
                                 $responseJson = Response::json(false, 'Payment not completed. Your amount is not enough!', ['is_changed' => false, 'order' => $order, 'transaction' => $transaction]);
                             }
                             $flag = false;
@@ -366,7 +385,7 @@ class OrderController extends Controller
                 //     sleep(10);
                 // }
             }
-           
+
             return $responseJson;
             // return $attempts;
         } catch (Exception $e) {

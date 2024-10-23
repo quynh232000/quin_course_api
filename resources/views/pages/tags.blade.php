@@ -29,12 +29,17 @@
                     </div>
                     <div class="card-body  pt-0 pb-4 px-4">
                         <form method="POST" class="table-responsive p-0 d-flex row"
-                            action="{{ isset($tag) ? '/tags/' . $tag->id : '' }}">
+                            action="{{ isset($tag) ? route('admin.tag.update',['id'=>$tag->id]) : '' }}">
                             @csrf
                             <div class="col-md-3">
                                 <div class="form-label">Name</div>
                                 <input type="text" value="{{ isset($tag) ? $tag->name : '' }}" name="name"
                                     class="form-control" placeholder="Javascript, PHP">
+                            </div>
+                            <div class="col-md-7">
+                                <div class="form-label">Description</div>
+                                <input type="text" value="{{ isset($tag) ? $tag->description : '' }}" name="description"
+                                    class="form-control" placeholder="Aa..">
                             </div>
 
 

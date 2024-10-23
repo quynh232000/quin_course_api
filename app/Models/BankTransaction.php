@@ -11,6 +11,7 @@ class BankTransaction extends Model
     protected $table = "bank_transactions";
     protected $fillable = [
         'bank_id',
+        'order_code',
         'bank_brand_name',
         'account_number',
         'transaction_date',

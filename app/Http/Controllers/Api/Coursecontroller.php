@@ -169,6 +169,15 @@ class Coursecontroller extends Controller
      *         )
      *     ),
      *      @OA\Parameter(
+     *         description="Limit per page number for filtering results",
+     *         in="query",
+     *         name="search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *      @OA\Parameter(
      *         description="Type of course: free, sale, popular",
      *         in="query",
      *         name="type",
@@ -369,6 +378,10 @@ class Coursecontroller extends Controller
                 if ($check_teacher) {
                     $query->where('user_id', $request->teacher_id);
                 }
+            }
+            if($request->search && $request->search !=''){
+                $query->where('title', 'LIKE', '%'. $request->search. '%');
+                    // ->orWhere('description', 'LIKE', '%'. $request->search. '%');
             }
 
             $is_user_course = false;
@@ -710,6 +723,7 @@ class Coursecontroller extends Controller
                 return $section;
             });
             $course->total_steps = $course->total_steps();
+            $course->isEnrollment = $course->isEnrollment();
             $course->rating = $course->rating();
             $course->category->parent = $course->category->getAllParents();
             $related_courses = $course->related_courses();

@@ -100,6 +100,36 @@
                 }
             }
         },
+        "/api/blog/{id}/info": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "description": "Returns blog information",
+                "operationId": "get_blog_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Blog slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/blogs/my_blogs": {
             "get": {
                 "tags": [
@@ -266,6 +296,14 @@
                                         "description": "Tag ID of the new blog",
                                         "type": "integer"
                                     },
+                                    "subtitle": {
+                                        "description": "subtitle of the new blog",
+                                        "type": "string"
+                                    },
+                                    "content_markdown": {
+                                        "description": "content_markdown of the new blog",
+                                        "type": "string"
+                                    },
                                     "thumbnail_url": {
                                         "description": "Thumbnail blog ",
                                         "type": "file",
@@ -400,6 +438,88 @@
                 "parameters": [
                     {
                         "name": "blog_id",
+                        "in": "path",
+                        "description": "ID of the blog ",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blog/{id}/save": {
+            "post": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Save or unsave blog",
+                "description": "Returns result",
+                "operationId": "save_blog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the blog ",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blog/mysaved": {
+            "get": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Get my save blog",
+                "description": "Returns result",
+                "operationId": "mysaved",
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/blog/{id}/love": {
+            "post": {
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "love or unlove blog",
+                "description": "Returns result",
+                "operationId": "loveblog",
+                "parameters": [
+                    {
+                        "name": "id",
                         "in": "path",
                         "description": "ID of the blog ",
                         "required": true,
@@ -920,6 +1040,15 @@
                         }
                     },
                     {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Limit per page number for filtering results",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "type",
                         "in": "query",
                         "description": "Type of course: free, sale, popular",
@@ -1277,7 +1406,7 @@
             }
         },
         "/api/course/user_quiz/{id}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Course"
                 ],
@@ -1289,6 +1418,37 @@
                         "name": "id",
                         "in": "path",
                         "description": "id of this answer",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/course/certificate/{slug}": {
+            "post": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "get certificate",
+                "description": "certificate",
+                "operationId": "certificate",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of this course certificate",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1349,10 +1509,6 @@
                                 "properties": {
                                     "note": {
                                         "description": "Your note",
-                                        "type": "string"
-                                    },
-                                    "time": {
-                                        "description": "Note in time video: 1:20",
                                         "type": "string"
                                     },
                                     "step_id": {
@@ -1885,6 +2041,53 @@
                 ]
             }
         },
+        "/api/auth/change_password": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Change new password",
+                "description": "Returns status",
+                "operationId": "change_password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "password_old": {
+                                        "description": "Enter the old password",
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "password_new": {
+                                        "description": "Enter the new password",
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "password_confirm": {
+                                        "description": "Enter the password confirmation",
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/logout": {
             "post": {
                 "tags": [
@@ -2010,6 +2213,205 @@
                 "responses": {
                     "400": {
                         "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/user/{username}/courses": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get  user_courses information",
+                "description": "Returns  user_info",
+                "operationId": "user_courses",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username of user_info",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    }
+                }
+            }
+        },
+        "/api/auth/withgoogle": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login with google",
+                "description": "Returns user",
+                "operationId": "withgoogle",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "id_token": {
+                                        "description": "Your ID token, used to identify",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/auth/forgotpassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "forgotpassword",
+                "description": "forgotpassword",
+                "operationId": "forgotpassword",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Your email",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/auth/changenewpassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "changenewpassword",
+                "description": "changenewpassword",
+                "operationId": "changenewpassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "pasword": {
+                                        "description": "Your email",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/auth/update-profile": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "update-profile",
+                "description": "update-profile",
+                "operationId": "update-profile",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "description": "first name",
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "description": "last name",
+                                        "type": "string"
+                                    },
+                                    "phone_number": {
+                                        "description": "phone_number",
+                                        "type": "string"
+                                    },
+                                    "avatar_url": {
+                                        "description": "Avatar ",
+                                        "type": "file",
+                                        "format": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/update-social": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "update-social",
+                "description": "update-social",
+                "operationId": "update-social",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "facebook": {
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
                     }
                 }
             }

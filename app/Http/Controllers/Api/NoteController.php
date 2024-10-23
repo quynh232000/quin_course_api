@@ -31,11 +31,8 @@ class NoteController extends Controller
      *                     property="note",
      *                     description="Your note",
      *                     type="string"
-     *                 ),@OA\Property(
-     *                     property="time",
-     *                     description="Note in time video: 1:20",
-     *                     type="string"
-     *                 ),@OA\Property(
+     *                 ),
+     *                  @OA\Property(
      *                     property="step_id",
      *                     description="Step ID",
      *                     type="string"
@@ -54,7 +51,6 @@ class NoteController extends Controller
         try {
             $validate = Validator::make($request->all(), [
                 'note' => 'required|string',
-                'time' => 'required',
                 'step_id' => 'required'
             ]);
             if ($validate->fails()) {
@@ -73,7 +69,7 @@ class NoteController extends Controller
                 'note' => $request->note,
                 'user_id' => auth('api')->id(),
                 'step_id' => $request->step_id,
-                'time' => $request->time
+                'time' => '00'
             ]);
             $note->step = $note->step;
             return Response::json(true, 'Note created successfully', $note);
@@ -153,8 +149,23 @@ class NoteController extends Controller
             } else {
                 $sort = 'desc';
             }
-            $notes = Note::whereIn('step_id', $step_ids)->where('user_id', auth('api')->id())->with('step')->orderBy('created_at', $sort)->get();
-            return Response::json(true, 'Notes found successfully', $notes);
+
+            $page = $request->page ?? 1;
+            $limit = $request->limit ?? 20;
+            $query = Note::whereIn('step_id', $step_ids)
+                ->where('user_id', auth('api')->id())
+                ->with('step')
+                ->orderBy('created_at', $sort);
+            $data = $query->paginate($limit, ['*'], 'page', $page);
+
+            return Response::json(true, 'Notes found successfully', $data->items(), [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'per_page' => $data->perPage(),
+                'total' => $data->total(),
+                'next_page_url' => $data->nextPageUrl(),
+                'prev_page_url' => $data->previousPageUrl(),
+            ]);
 
         } catch (Exception $e) {
             return Response::json(false, 'Error: ' . $e->getMessage());

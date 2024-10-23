@@ -79,7 +79,7 @@
                                             <option value="">--Select--</option>
                                             @foreach ($banks as $item)
                                                 <option value="{{ $item->id }}"
-                                                    {{ $teacherinfo && $teacherinfo->bank && $teacherinfo->bank->id == $item->id ? 'selected' : '' }}>
+                                                    {{( old('bank_id') == $item->id )? 'selected' : ($teacherinfo && $teacherinfo->bank && $teacherinfo->bank->id == $item->id ? 'selected' : '') }}>
 
                                                     {{ $item->symbol }} - {{ $item->name }}
                                                 </option>

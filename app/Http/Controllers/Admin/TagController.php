@@ -30,17 +30,19 @@ class TagController extends Controller
         }
         if ($id) {
             $tag = Tag::find($id);
+            $slug = $tag->slug;
             if ($tag->name != $request->name) {
                 $slug = Str::slug($request->name);
                 $checkSlug = Tag::where('slug', $slug)->count(); //
                 if ($checkSlug > 0) {
                     $slug = $slug . '_' . $checkSlug;
                 }
-                $tag->update([
-                    'name' => $request->name,
-                    'slug' => $slug,
-                ]);
             }
+            $tag->update([
+                'name' => $request->name,
+                'slug' => $slug,
+                'description' => $request->description
+            ]);
             return redirect()->back()->with('success', 'Update Tag successfully!');
         } else {
             $slug = Str::slug($request->name);
@@ -51,6 +53,7 @@ class TagController extends Controller
             Tag::create([
                 'name' => $request->name,
                 'slug' => $slug,
+                'description' => $request->description,
             ]);
             return redirect()->back()->with('success', 'Create new Tag successfully!');
         }

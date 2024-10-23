@@ -341,7 +341,6 @@ class CourseController extends Controller
         ]);
         return redirect()->back()->with('success', 'Created new step successfully!');
 
-
     }
     public function course_curriculum_lecture($id, $section_id, $step_id)
     {

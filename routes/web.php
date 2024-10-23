@@ -17,86 +17,20 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Common\VideoController;
 use App\Http\Middleware\AdminRoleMiddleware;
+use App\Http\Middleware\IsLoginMiddleware;
 use App\Http\Middleware\MineCourseMiddleware;
+use App\Http\Middleware\NotLoginMiddleware;
 use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\TeacherInfoMiddleWare;
 use App\Models\LevelCourse;
 use Illuminate\Support\Facades\Route;
 
 
+Route::middleware([IsLoginMiddleware::class])->group(function () {
 
-Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
     Route::get("/", [AdminController::class, 'dashboard'])->name("admin.dashboad");
-    Route::prefix("/roles")->group(function () {
-        Route::get("/", [RoleController::class, 'roles'])->name("list");
-        Route::post("/", [RoleController::class, 'createRoles'])->name("create_role")->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::get("/delete/{id}", [RoleController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
-    });
-    Route::prefix("/categories")->group(function () {
-        Route::get("/", [CategoryController::class, 'index']);
-        Route::get("/{id}", [CategoryController::class, 'get_category_info']);
-        Route::post("/", [CategoryController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/update/{id}", [CategoryController::class, 'update'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{id}", [CategoryController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::get("/delete/{id}", [CategoryController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
-    });
-    Route::prefix("/levels")->group(function () {
-        Route::get("/", [LevelController::class, 'index']);
-        Route::get("/{id}", [LevelController::class, 'get_level_info']);
-        Route::post("/", [LevelController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/update/{id}", [LevelController::class, 'update'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{id}", [LevelController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::get("/delete/{id}", [LevelController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
-    });
-    Route::prefix("/tags")->group(function () {
-        Route::get("/", [TagController::class, 'index']);
-        Route::get("/{id}", [TagController::class, 'index']);
-        Route::post("/", [TagController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{id}", [TagController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::get("/delete/{id}", [TagController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
-    });
-    Route::prefix("/banners")->group(function () {
-        Route::get("/", [BannerController::class, 'index'])->name('admin.banner.list');
-        Route::get("/create", [BannerController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner.create');
-        Route::post("/create", [BannerController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner._create');
-        Route::get("/update/{id}", [BannerController::class, 'update'])->name('admin.banner.update');
-        Route::post("/update/{id}", [BannerController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner._update');
-        Route::get("/delete/{id}", [BannerController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.banner.delete');
-    });
-    Route::prefix("/blogs")->group(function () {
-        Route::get("/", [BlogController::class, 'index'])->name('admin.blog.list');
-        Route::get("/{id}/deletetag/{tag_id}", [BlogController::class, 'deletetag'])->name('admin.blog.deletetag');
-        Route::get("/create", [BlogController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.blog.create');
-        Route::post("/create", [BlogController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.blog._create');
-        Route::get("/update/{id}", [BlogController::class, 'update'])->name('admin.blog.update');
-        Route::post("/update/{id}", [BlogController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.blog._update');
-        Route::get("/delete/{id}", [BlogController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.blog.delete');
-    });
-    Route::prefix("/vouchers")->group(function () {
-        Route::get("/", [VoucherController::class, 'index'])->name('admin.voucher.list');
-        Route::get("/{id}/deletetag/{tag_id}", [VoucherController::class, 'deletetag'])->name('admin.voucher.deletetag');
-        Route::get("/create", [VoucherController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.voucher.create');
-        Route::post("/create", [VoucherController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.voucher._create');
-        Route::get("/update/{id}", [VoucherController::class, 'update'])->name('admin.voucher.update');
-        Route::post("/update/{id}", [VoucherController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.voucher._update');
-        Route::get("/delete/{id}", [VoucherController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.voucher.delete');
-    });
-
-    Route::prefix("/users")->group(function () {
-        Route::get("/", [UserController::class, 'index']);
-        Route::post("/{uuid}/status", [UserController::class, 'updateStatus'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{uuid}/iscomment", [UserController::class, 'iscomment'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{uuid}/addrole", [UserController::class, 'addRole'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::get("/{uuid}/deleterole/{id}", [UserController::class, 'deleteRole'])->middleware([PermissionMiddleware::class . ':Admin delete']);
-        Route::post("/{uuid}/updateinfo", [UserController::class, 'updateInfo'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{uuid}/changeavatar", [UserController::class, 'changeavatar'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::post("/{uuid}/changethumbnail", [UserController::class, 'changethumbnail'])->middleware([PermissionMiddleware::class . ':Admin edit']);
-        Route::get("/{uuid}", [UserController::class, 'userdetail']);
-    });
-    Route::get("/logout", [AuthController::class, 'logout']);
-
     Route::prefix('/teacher')->group(function () {
-        Route::get('updateinfo', [TeacherController::class, 'updateinfo']);
+        Route::get('updateinfo', [TeacherController::class, 'updateinfo'])->name('teacher.updateinfo');
         Route::post('updateinfo', [TeacherController::class, '_updateinfo']);
     });
     Route::middleware([TeacherInfoMiddleWare::class . ':Teacher'])->prefix('/course')->group(function () {
@@ -119,11 +53,11 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
             Route::get('section/{section_id}/delete/{step_id}', [CourseController::class, 'delete_step'])->name('course.manage.delete_step');
             Route::get('section/{section_id}/lecture/{step_id}', [CourseController::class, 'course_curriculum_lecture'])->name('course.manage.course_curriculum_lecture');
             Route::post('section/{section_id}/lecture/{step_id}', [CourseController::class, '_course_curriculum_lecture'])->name('course.manage._course_curriculum_lecture');
-            
+
             Route::get('section/{section_id}/article/{step_id}', [CourseController::class, 'course_curriculum_article'])->name('course.manage.course_curriculum_article');
             Route::post('section/{section_id}/article/{step_id}', [CourseController::class, '_course_curriculum_article'])->name('course.manage._course_curriculum_article');
 
-            
+
             Route::get('section/{section_id}/quiz/{step_id}', [CourseController::class, 'course_curriculum_quiz'])->name('course.manage.course_curriculum_quiz');
             Route::post('section/{section_id}/quiz/{step_id}', [CourseController::class, 'course_quiz_addanswer'])->name('course.manage.course_quiz_addanswer');
             Route::post('section/{section_id}/quiz/{step_id}/addquestion', [CourseController::class, 'quiz_addquestion'])->name('course.quiz_addquestion');
@@ -149,32 +83,111 @@ Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
             Route::post('/published_course', [CourseController::class, 'published_course'])->name('published_course');
         });
     });
-    Route::middleware([PermissionMiddleware::class . ':Super Admin'])->prefix('settings')->group(function () {
-        Route::get('/', [AdminController::class, 'settings'])->name('admin.settings');
-        Route::get("/{id}", [AdminController::class, 'settings']);
-        Route::post("/", [AdminController::class, 'settings_create']);
-        Route::post("/{id}", [AdminController::class, 'settings_create']);
-        Route::get("/delete/{id}", [AdminController::class, 'settings_delete']);
-        ;
+    // admin permission
+    Route::middleware([AdminRoleMiddleware::class . ":Admin"])->group(function () {
+
+        Route::prefix("/roles")->group(function () {
+            Route::get("/", [RoleController::class, 'roles'])->name("list");
+            Route::post("/", [RoleController::class, 'createRoles'])->name("create_role")->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::get("/delete/{id}", [RoleController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
+        });
+        Route::prefix("/categories")->group(function () {
+            Route::get("/", [CategoryController::class, 'index']);
+            Route::get("/{id}", [CategoryController::class, 'get_category_info']);
+            Route::post("/", [CategoryController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/update/{id}", [CategoryController::class, 'update'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{id}", [CategoryController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::get("/delete/{id}", [CategoryController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
+        });
+        Route::prefix("/levels")->group(function () {
+            Route::get("/", [LevelController::class, 'index']);
+            Route::get("/{id}", [LevelController::class, 'get_level_info']);
+            Route::post("/", [LevelController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/update/{id}", [LevelController::class, 'update'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{id}", [LevelController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::get("/delete/{id}", [LevelController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
+        });
+        Route::prefix("/tags")->group(function () {
+            Route::get("/", [TagController::class, 'index']);
+            Route::get("/{id}", [TagController::class, 'index']);
+            Route::post("/", [TagController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{id}", [TagController::class, 'create'])->name('admin.tag.update')->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::get("/delete/{id}", [TagController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete']);
+        });
+        Route::prefix("/banners")->group(function () {
+            Route::get("/", [BannerController::class, 'index'])->name('admin.banner.list');
+            Route::get("/create", [BannerController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner.create');
+            Route::post("/create", [BannerController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner._create');
+            Route::get("/update/{id}", [BannerController::class, 'update'])->name('admin.banner.update');
+            Route::post("/update/{id}", [BannerController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.banner._update');
+            Route::get("/delete/{id}", [BannerController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.banner.delete');
+        });
+        Route::prefix("/blogs")->group(function () {
+            Route::get("/", [BlogController::class, 'index'])->name('admin.blog.list');
+            Route::get("/{id}/deletetag/{tag_id}", [BlogController::class, 'deletetag'])->name('admin.blog.deletetag');
+            Route::get("/create", [BlogController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.blog.create');
+            Route::post("/create", [BlogController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.blog._create');
+            Route::get("/update/{id}", [BlogController::class, 'update'])->name('admin.blog.update');
+            Route::post("/update/{id}", [BlogController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.blog._update');
+            Route::get("/delete/{id}", [BlogController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.blog.delete');
+        });
+        Route::prefix("/vouchers")->group(function () {
+            Route::get("/", [VoucherController::class, 'index'])->name('admin.voucher.list');
+            Route::get("/{id}/deletetag/{tag_id}", [VoucherController::class, 'deletetag'])->name('admin.voucher.deletetag');
+            Route::get("/create", [VoucherController::class, 'create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.voucher.create');
+            Route::post("/create", [VoucherController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.voucher._create');
+            Route::get("/update/{id}", [VoucherController::class, 'update'])->name('admin.voucher.update');
+            Route::post("/update/{id}", [VoucherController::class, '_create'])->middleware([PermissionMiddleware::class . ':Admin edit'])->name('admin.voucher._update');
+            Route::get("/delete/{id}", [VoucherController::class, 'delete'])->middleware([PermissionMiddleware::class . ':Admin delete'])->name('admin.voucher.delete');
+        });
+
+        Route::prefix("/users")->group(function () {
+            Route::get("/", [UserController::class, 'index']);
+            Route::post("/{uuid}/status", [UserController::class, 'updateStatus'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{uuid}/iscomment", [UserController::class, 'iscomment'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{uuid}/addrole", [UserController::class, 'addRole'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::get("/{uuid}/deleterole/{id}", [UserController::class, 'deleteRole'])->middleware([PermissionMiddleware::class . ':Admin delete']);
+            Route::post("/{uuid}/updateinfo", [UserController::class, 'updateInfo'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{uuid}/changeavatar", [UserController::class, 'changeavatar'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::post("/{uuid}/changethumbnail", [UserController::class, 'changethumbnail'])->middleware([PermissionMiddleware::class . ':Admin edit']);
+            Route::get("/{uuid}", [UserController::class, 'userdetail']);
+        });
+        Route::get("/logout", [AuthController::class, 'logout']);
+
+
+
+        Route::middleware([PermissionMiddleware::class . ':Super Admin'])->prefix('settings')->group(function () {
+            Route::get('/', [AdminController::class, 'settings'])->name('admin.settings');
+            Route::get("/{id}", [AdminController::class, 'settings']);
+            Route::post("/", [AdminController::class, 'settings_create']);
+            Route::post("/{id}", [AdminController::class, 'settings_create']);
+            Route::get("/delete/{id}", [AdminController::class, 'settings_delete']);
+            ;
+        });
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'manage_orders'])->name('admin.orders');
+            Route::get('/{order_code}', [OrderController::class, 'order_detail'])->name('admin.order.order_detail');
+            Route::get('/cancel/{order_id}', [OrderController::class, 'cancel_order'])->name('admin.order.cancel');
+            Route::get('/confirm/{order_id}', [OrderController::class, 'confirm_order'])->name('admin.order.confirm');
+        });
+        Route::get('/notfund', function () {
+            return view('pages.notfund');
+        })->name('admin.notfund');
     });
-    Route::prefix('orders')->group(function () { 
-        Route::get('/',[OrderController::class,'manage_orders'])->name('admin.orders');
-        Route::get('/{order_code}',[OrderController::class,'order_detail'])->name('admin.order.order_detail');
-        Route::get('/cancel/{order_id}',[OrderController::class,'cancel_order'])->name('admin.order.cancel');
-        Route::get('/confirm/{order_id}',[OrderController::class,'confirm_order'])->name('admin.order.confirm');
-    });
-    Route::get('/notfund', function () {
-        return view('pages.notfund');
-    })->name('admin.notfund');
 });
-Route::prefix("/auth")->group(function () {
-    Route::get("/login", [AuthController::class, 'login']);
+
+
+
+
+// not login
+Route::middleware([NotLoginMiddleware::class])->prefix("/auth")->group(function () {
+    Route::get("/login", [AuthController::class, 'login'])->name('login');
     Route::post("/login", [AuthController::class, '_login']);
-
     Route::get('{provider}/redirect', [AuthController::class, 'redirect']);
-
     Route::get('{provider}/callback', [AuthController::class, 'callback']);
 });
+
+
 
 Route::get('/order/confirm/{order_id}', [OrderController::class, 'admin_confirm_order']);
 

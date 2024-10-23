@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogTag;
+use App\Models\LoveBlog;
 use App\Models\Response;
+use App\Models\SaveBlog;
 use App\Models\Tag;
 use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -53,19 +55,26 @@ class Blogcontroller extends Controller
     {
         try {
             $limit = $request->limit ?? 4;
+            $page = $request->page ?? 1;
+            $query = Blog::where(['is_published' => true, 'is_show' => true, 'deleted_at' => null])->with(['tags.tag', 'user']);
             if ($request->user_id && $request->user_id != '') {
-                $checkuser = User::where('id', $request->user_id)->first();
-                if (!$checkuser) {
-                    return Response::json(false, 'User not found');
-                }
-                $blogs = Blog::where(['is_published' => true, 'is_show' => true, 'deleted_at' => null, 'user_id' => $request->user_id])->with(['tags.tag', 'user'])->limit($limit)->get();
-
-            } else {
-                $blogs = Blog::where(['is_published' => true, 'is_show' => true, 'deleted_at' => null])->with(['tags.tag', 'user'])->limit($limit)->get();
-
+                $query->where(['user_id' => $request->user_id]);
             }
-            // $blogs = Blog::all();
-            return Response::json(true, 'Get list blog successfully!', $blogs);
+            $data = $query->orderBy('updated_at', 'desc')->paginate($limit, ['*'], 'page', $page);
+            $data->getCollection()->transform(function ($item) {
+                $item->love_counts = $item->love_counts();
+                $item->is_loved = $item->is_loved();
+                $item->is_saved = $item->is_saved();
+                return $item;
+            });
+            return Response::json(true, 'Get list blog successfully!', $data->items(), [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'per_page' => $data->perPage(),
+                'total' => $data->total(),
+                'next_page_url' => $data->nextPageUrl(),
+                'prev_page_url' => $data->previousPageUrl(),
+            ]);
         } catch (Exception $e) {
             return Response::json(false, 'Error from server...', $e->getMessage());
         }
@@ -101,7 +110,60 @@ class Blogcontroller extends Controller
             if (!$blog) {
                 return Response::json(false, 'Not found blog with slug: ' . $slug);
             }
+            $blog->love_counts = $blog->love_counts();
+            $blog->is_loved = $blog->is_loved();
+            $blog->is_saved = $blog->is_saved();
+            $blog->comment_count =$blog->comment_count();
             return Response::json(true, 'Get list blog successfully!', $blog);
+
+
+        } catch (Exception $e) {
+            return Response::json(false, 'Error from server...', $e->getMessage());
+        }
+    }
+    /**
+     * @OA\Get(
+     *      path="/api/blog/{id}/info",
+     *      operationId="get_blog_by_id",
+     *      tags={"Blog"},
+     *      description="Returns blog information",
+     *    @OA\Parameter(
+     *          name="id",
+     *          description="Blog slug",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      security={{
+     *         "bearer": {}
+     *     }},
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid ID supplied"
+     *     ),
+     * )
+     */
+    public function get_blog_by_id($id)
+    {
+        try {
+            if (!$id) {
+                return Response::json(false, 'Missing parameter id blog');
+            }
+            $blog = Blog::where('id', $id)->with(['tags.tag', 'user'])->first();
+            if (!$blog) {
+                return Response::json(false, 'Not found blog with id: ' . $id);
+            }
+            if ($blog->user_id != auth('api')->id()) {
+                return Response::json(false, 'You are not authorized to view this blog');
+            }
+            $blog->love_counts = $blog->love_counts();
+            $blog->is_loved = $blog->is_loved();
+            $blog->is_saved = $blog->is_saved();
+            return Response::json(true, 'Get list blog successfully!', $blog);
+
+
         } catch (Exception $e) {
             return Response::json(false, 'Error from server...', $e->getMessage());
         }
@@ -143,8 +205,11 @@ class Blogcontroller extends Controller
             $page = $request->page ?? 1;
 
 
-            $data = Blog::where(['user_id' => auth('api')->id(), 'deleted_at' => null])->with('tags.tag')->offset(($page - 1) * $limit)
+            $data = Blog::where(['user_id' => auth('api')->id(), 'deleted_at' => null])
+                ->with('tags.tag', 'user')
+                ->offset(($page - 1) * $limit)
                 ->limit($limit)
+                ->orderBy('updated_at', 'desc')
                 ->get();
 
             return Response::json(true, 'Get list blog successfully!', $data);
@@ -262,8 +327,13 @@ class Blogcontroller extends Controller
                 ->with(['tags.tag', 'user'])
                 ->offset(($page - 1) * $limit)
                 ->limit($limit)
-                ->get();
-            return Response::json(true, 'Get list blog successfully!', $blogs);
+                ->get()->map(function ($item) {
+                    $item->love_counts = $item->love_counts();
+                    $item->is_loved = $item->is_loved();
+                    $item->is_saved = $item->is_saved();
+                    return $item;
+                });
+            return Response::json(true, 'Get list blog successfully!', ['tag' => $tag, 'blogs' => $blogs]);
         } catch (Exception $e) {
             return Response::json(false, 'Error from server... ', $e->getMessage());
         }
@@ -316,7 +386,18 @@ class Blogcontroller extends Controller
      *                     property="tag_id",
      *                     description="Tag ID of the new blog",
      *                     type="integer"
-     *                 ),@OA\Property(
+     *                 ),
+     *                 @OA\Property(
+     *                     property="subtitle",
+     *                     description="subtitle of the new blog",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="content_markdown",
+     *                     description="content_markdown of the new blog",
+     *                     type="string"
+     *                 ),
+     *                  @OA\Property(
      *                     property="thumbnail_url",
      *                     description="Thumbnail blog ",
      *                    type="file",
@@ -335,9 +416,10 @@ class Blogcontroller extends Controller
     {
         try {
             $validate = Validator::make($request->all(), [
-                'title' => 'required|min:10',
-                'content' => 'required|min:100',
-                'thumbnail_url' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'title' => 'required',
+                'content' => 'required',
+                'thumbnail_url' => 'required|image',
+                'subtitle' => 'required'
             ]);
             if ($validate->fails()) {
                 return Response::json(false, 'Validation Failed', $validate->errors());
@@ -362,15 +444,17 @@ class Blogcontroller extends Controller
             }
             $blog = Blog::create([
                 'title' => $request->title,
+                'subtitle' => $request->subtitle,
+                'content_markdown' => $request->content_markdown,
                 'slug' => $slug,
-                'content' => $request->content,
+                'content' => $request->input('content'),
                 'thumbnail_url' => $thumbnail_url,
                 'user_id' => $user->id,
                 'from' => $from,
                 'comment_count' => 0,
                 'view_count' => 0,
                 'is_show' => true,
-                'is_published' => false,
+                'is_published' => true,
                 'published_at' => null
             ]);
             if ($request->tag_id && $request->tag_id != '') {
@@ -454,8 +538,9 @@ class Blogcontroller extends Controller
             }
             // validate data
             $validate = Validator::make($request->all(), [
-                'title' => 'required|min:10',
-                'content' => 'required|min:100',
+                'title' => 'required',
+                'subtitle' => 'required',
+                'content' => 'required',
             ]);
             if ($validate->fails()) {
                 return Response::json(false, 'Validation Failed', $validate->errors());
@@ -474,12 +559,18 @@ class Blogcontroller extends Controller
                 $blog->title = $request->title;
                 $blog->slug = $slug;
             }
+            $blog->subtitle = $request->subtitle;
+            $blog->content_markdown = $request->content_markdown;
             // cheeck add tag
             if ($request->tag_id && $request->tag_id != '') {
-                BlogTag::create([
-                    'blog_id' => $blog->id,
-                    'tag_id' => $request->tag_id
-                ]);
+                $checkBlogTag = BlogTag::where(['tag_id' => $request->tag_id, 'blog_id' => $blog->id])->first();
+                if (!$checkBlogTag) {
+                    BlogTag::create([
+                        'blog_id' => $blog->id,
+                        'tag_id' => $request->tag_id
+                    ]);
+
+                }
             }
             $blog->save();
             return Response::json(true, 'Update blog successfully!', $blog);
@@ -589,6 +680,135 @@ class Blogcontroller extends Controller
             $blog->deleted_at = Carbon::now();
             $blog->save();
             return Response::json(true, 'Delete blog successfully!', $blog);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error from server... ', $e->getMessage());
+        }
+    }
+    /**
+     * @OA\Post(
+     *      path="/api/blog/{id}/save",
+     *      operationId="save_blog",
+     *      tags={"Blog"},
+     *      summary="Save or unsave blog",
+     *      description="Returns result",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="ID of the blog ",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      security={{
+     *         "bearer": {}
+     *     }},
+     *      @OA\Response(response="405", description="Invalid input"),
+     * )
+     */
+    public function save_blog($id)
+    {
+        try {
+            if (!$id) {
+                return Response::json(false, 'Missing Blog ID ');
+            }
+            $blog = Blog::where('id', $id)->first();
+            if (!$blog) {
+                return Response::json(false, 'Not found blog with ID: ' . $id);
+            }
+            $user = auth('api')->user();
+
+            $save_blog = SaveBlog::where(['user_id' => $user->id, 'blog_id' => $blog->id])->first();
+            if (!$save_blog) {
+                SaveBlog::create([
+                    'user_id' => $user->id,
+                    'blog_id' => $blog->id
+                ]);
+                return Response::json(true, 'Save blog successfully!', 'save');
+            } else {
+                $save_blog->delete();
+                return Response::json(true, 'Unsave blog successfully!', 'unsave');
+            }
+
+        } catch (Exception $e) {
+            return Response::json(false, 'Error from server... ', $e->getMessage());
+        }
+    }
+    /**
+     * @OA\Get(
+     *      path="/api/blog/mysaved",
+     *      operationId="mysaved",
+     *      tags={"Blog"},
+     *      summary="Get my save blog",
+     *      description="Returns result",
+     *      security={{
+     *         "bearer": {}
+     *     }},
+     *      @OA\Response(response="405", description="Invalid input"),
+     * )
+     */
+    public function mysaved()
+    {
+        try {
+            $user = auth('api')->user();
+            $save_blog_ids = SaveBlog::where(['user_id' => $user->id])->pluck('blog_id')->all();
+
+            $blogs = Blog::whereIn('id', $save_blog_ids)->with('user', 'tags.tag')->limit(20)->get()->map(function ($item) {
+                $item->date_saved = $item->date_saved();
+                return $item;
+            });
+            return Response::json(true, 'Saved blogs successfully!', $blogs);
+        } catch (Exception $e) {
+            return Response::json(false, 'Error from server... ', $e->getMessage());
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/blog/{id}/love",
+     *      operationId="loveblog",
+     *      tags={"Blog"},
+     *      summary="love or unlove blog",
+     *      description="Returns result",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="ID of the blog ",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      security={{
+     *         "bearer": {}
+     *     }},
+     *      @OA\Response(response="405", description="Invalid input"),
+     * )
+     */
+    public function loveblog($id)
+    {
+        try {
+            if (!$id) {
+                return Response::json(false, 'Missing Blog ID ');
+            }
+            $blog = Blog::where('id', $id)->first();
+            if (!$blog) {
+                return Response::json(false, 'Not found blog with ID: ' . $id);
+            }
+            $user = auth('api')->user();
+
+            $love_blog = LoveBlog::where(['user_id' => $user->id, 'blog_id' => $blog->id])->first();
+            if (!$love_blog) {
+                LoveBlog::create([
+                    'user_id' => $user->id,
+                    'blog_id' => $blog->id
+                ]);
+                return Response::json(true, 'Love blog successfully!', 'love');
+            } else {
+                $love_blog->delete();
+                return Response::json(true, 'Unlove blog successfully!', 'unlove');
+            }
+
         } catch (Exception $e) {
             return Response::json(false, 'Error from server... ', $e->getMessage());
         }

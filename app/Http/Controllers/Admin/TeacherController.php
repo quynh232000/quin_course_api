@@ -34,8 +34,8 @@ class TeacherController extends Controller
             return redirect()->back()->withInput()->with('error', 'Please inter all information!');
         }
 
-        if (!preg_match('/^\d{13,19}$/', $request->card_number)) {
-            return redirect()->back()->withInput()->with('error', 'Invalid card number!');
+        if (!preg_match('/^\d{12,19}$/', $request->card_number)) {
+            return redirect()->back()->withInput()->with('error', 'Invalid card number! Content 12-19 numbers');
         }
         if ($request->momo_number && !preg_match('/^(0[3|5|7|8|9])+([0-9]{8})\b$/', $request->momo_number)) {
             return redirect()->back()->withInput()->with('error', 'Invalid MoMo number!');
@@ -79,19 +79,19 @@ class TeacherController extends Controller
 
         switch ($step) {
             case 1:
-                return view('pages.teacher.createcourse', compact('step'));
+                return view('pages.teacher.createCourse', compact('step'));
             case 2:
 
                 if (!$currrentstep || $currrentstep < $step - 1) {
                     return redirect()->back();
                 }
-                return view('pages.teacher.createcourse', compact('step'));
+                return view('pages.teacher.createCourse', compact('step'));
             case 3:
                 if (!$currrentstep || $currrentstep < $step - 1) {
                     return redirect()->back();
                 }
                 $categories = Category::where('parent_id', 0)->get();
-                return view('pages.teacher.createcourse', compact('step', 'categories'));
+                return view('pages.teacher.createCourse', compact('step', 'categories'));
             default:
                 return redirect()->back();
 

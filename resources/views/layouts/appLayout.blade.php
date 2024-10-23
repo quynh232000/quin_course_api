@@ -57,82 +57,84 @@
                             <span class="nav-link-text ms-1">Dashboard</span>
                         </a>
                     </li>
+                    @if (in_array('Admin', auth('admin')->user()->roles()->toArray()))
+                        <li class="nav-item">
+                            <a class="nav-link " href="/roles">
+                                <div class=" ms-2 me-2 text-warning text-sm opacity-10">
+                                    <i class="fa-solid fa-users-gear"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">User Roles</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/categories">
+                                <div class=" ms-2 me-2 text-warning text-sm opacity-10">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage Categories</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/levels">
+                                <div class=" ms-2 me-2 text-success text-sm opacity-10">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Level Courses</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/tags">
+                                <div class=" ms-2 me-2 text-primary text-sm opacity-10">
 
-                    <li class="nav-item">
-                        <a class="nav-link " href="/roles">
-                            <div class=" ms-2 me-2 text-warning text-sm opacity-10">
-                                <i class="fa-solid fa-users-gear"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">User Roles</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/categories">
-                            <div class=" ms-2 me-2 text-warning text-sm opacity-10">
-                                <i class="fa-solid fa-layer-group"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage Categories</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/levels">
-                            <div class=" ms-2 me-2 text-success text-sm opacity-10">
-                                <i class="fa-solid fa-database"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Level Courses</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/tags">
-                            <div class=" ms-2 me-2 text-primary text-sm opacity-10">
+                                    <i class="fa-solid fa-code"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage Tags</span>
+                            </a>
+                        </li>
 
-                                <i class="fa-solid fa-code"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage Tags</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/blogs">
-                            <div class=" ms-2 me-2 text-warning text-sm opacity-10">
-                                <i class="fa-solid fa-rss"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage Blogs</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/vouchers">
-                            <div class=" ms-2 me-2 text-success text-sm opacity-10">
-                                <i class="fa-solid fa-ticket"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage Vouchers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/banners">
-                            <div class=" ms-2 me-2 text-info text-sm opacity-10">
-                                <i class="fa-solid fa-images"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage Banners</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="{{ route('admin.orders') }}">
-                            <div
-                                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage Orders</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="/users">
-                            <div
-                                class="icon icon-shape icon-sm border-radius-md text-center text-info me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-single-02 text-dark text-sm opacity-10 text-info"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Manage User</span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/blogs">
+                                <div class=" ms-2 me-2 text-warning text-sm opacity-10">
+                                    <i class="fa-solid fa-rss"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage Blogs</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/vouchers">
+                                <div class=" ms-2 me-2 text-success text-sm opacity-10">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage Vouchers</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/banners">
+                                <div class=" ms-2 me-2 text-info text-sm opacity-10">
+                                    <i class="fa-solid fa-images"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage Banners</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="{{ route('admin.orders') }}">
+                                <div
+                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/users">
+                                <div
+                                    class="icon icon-shape icon-sm border-radius-md text-center text-info me-2 d-flex align-items-center justify-content-center">
+                                    <i class="ni ni-single-02 text-dark text-sm opacity-10 text-info"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Manage User</span>
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link " href="/course/instructor">
                             <div
@@ -169,13 +171,26 @@
                             <span class="nav-link-text ms-1">Virtual Reality</span>
                         </a>
                     </li> --}}
+                    @if (in_array('Admin', auth('admin')->user()->roles()->toArray()))
+                        <li class="nav-item">
+                            <a class="nav-link " href="/settings">
+                                <div
+                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="fa-solid fa-gear text-danger"></i>
+                                    
+                                </div>
+                                <span class="nav-link-text ms-1">Settings</span>
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item">
-                        <a class="nav-link " href="/settings">
+                        <a class="nav-link " href="{{ route('teacher.updateinfo') }}">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="fa-solid fa-gear text-danger"></i>
+
+                                <i class="fa-solid fa-circle-info text-danger"></i>
                             </div>
-                            <span class="nav-link-text ms-1">Settings</span>
+                            <span class="nav-link-text ms-1">Teacher Info</span>
                         </a>
                     </li>
                     <li class="nav-item mt-3">
@@ -190,7 +205,7 @@
                             <span class="nav-link-text ms-1">Profile</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link " href="/users/{{ auth('admin')->user()->uuid }}">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -198,7 +213,7 @@
                             </div>
                             <span class="nav-link-text ms-1">{{ auth('admin')->user()->username }}</span>
                         </a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link " href="/logout">
                             <div
@@ -650,9 +665,8 @@
 
             return decodedStr;
         }
-        const uuid =decodeCustomId('NWU1MmQ2YjQtMzVjOS00NjIzLTk1Y2MtNGU4ZmI0MTMyZDI5')
-        console.log(uuid+"");
-        
+        const uuid = decodeCustomId('NWU1MmQ2YjQtMzVjOS00NjIzLTk1Y2MtNGU4ZmI0MTMyZDI5')
+        console.log(uuid + "");
     </script>
     @yield('js')
 </body>

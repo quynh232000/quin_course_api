@@ -19,9 +19,11 @@
             border-radius: 50%;
             transition: .3s ease
         }
-        .tag-close:hover{
-           color: red
+
+        .tag-close:hover {
+            color: red
         }
+
         .tag-body:hover .tag-close {
             display: inline-block;
         }
@@ -96,6 +98,17 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Subtitle</label>
+                                        @if (isset($blog))
+                                            <textarea name="subtitle" class="form-control" id="" rows="3" value="">{{ $blog->subtitle }}</textarea>
+                                        @else
+                                            <textarea name="subtitle" class="form-control" id="" rows="3" value="">{{ old('subtitle') }}</textarea>
+                                        @endif
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -113,9 +126,9 @@
                                                 @foreach ($blog->tags as $item)
                                                     <div class="position-relative tag-body">
                                                         <span class="text-xs border p-2 rounded-2 text-primary">
-                                                            #{{$item->tag->slug}}</span>
-                                                        <a href="{{route('admin.blog.deletetag',['id'=>$blog->id,'tag_id'=>$item->id])}}" class="position-absolute tag-close"
-                                                           ><i
+                                                            #{{ $item->tag->slug }}</span>
+                                                        <a href="{{ route('admin.blog.deletetag', ['id' => $blog->id, 'tag_id' => $item->id]) }}"
+                                                            class="position-absolute tag-close"><i
                                                                 class="fa-regular fa-circle-xmark"></i></a>
                                                     </div>
                                                 @endforeach
